@@ -1,4 +1,4 @@
-package com.example.jelenazivanovic.weatherforecastappmwp.firstscreen.model;
+package com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.model;
 
 /**
  * Created by jelena.zivanovic on 12/20/2017.
