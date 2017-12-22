@@ -1,18 +1,21 @@
-package com.example.jelenazivanovic.weatherforecastappmwp;
+package com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.view;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
-import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.view.WeatherObj;
+import com.example.jelenazivanovic.weatherforecastappmwp.R;
+import com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.view.SettingsActivity;
 
 import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.di.ActivityContextModule;
 import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.di.DaggerRecyclerViewComponent;
 import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.di.RecyclerViewModule;
 import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.presenter.RecyclerViewPresenter;
-import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.view.ForecastAdapter;
-import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.view.RecyclerViewView;
 
 import java.util.ArrayList;
 
@@ -23,7 +26,6 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
     private RecyclerView mRecyclerView;
     private ForecastAdapter mAdapter;
 
-
     @Inject
     RecyclerViewPresenter presenter;
 
@@ -32,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        DaggerRecyclerViewComponent.builder().recyclerViewModule( new RecyclerViewModule(this)).activityModule(new ActivityContextModule(getApplicationContext())).build().inject(this);
+        DaggerRecyclerViewComponent.builder().recyclerViewModule( new RecyclerViewModule(this)).activityContextModule(new ActivityContextModule(getApplicationContext())).build().inject(this);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_forecast);
         LinearLayoutManager layoutManager =
@@ -41,19 +43,37 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
         mRecyclerView.setHasFixedSize(true);
         mAdapter = new ForecastAdapter(this, this);
         presenter.invokePresenter();
-
     }
 
     @Override
     public void onClick(long date) {
-
     }
 
     @Override
     public void lisOfWeather(ArrayList<WeatherObj> list) {
+
         mAdapter.swapCursor(list);
         mRecyclerView.setAdapter(mAdapter);
-
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.forecast,menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_settings:
+                startActivity(new Intent(this,SettingsActivity.class));
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

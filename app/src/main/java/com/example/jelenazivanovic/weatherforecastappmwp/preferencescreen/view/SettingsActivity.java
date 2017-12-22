@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.jelenazivanovic.weatherforecastappmwp;
+package com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.view;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+
+import com.example.jelenazivanovic.weatherforecastappmwp.R;
 
 /**
  * SettingsActivity is responsible for displaying the {@link SettingsFragment}. It is also
@@ -40,6 +42,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -13,17 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.jelenazivanovic.weatherforecastappmwp;
+package com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.view;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+
 import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.ListPreference;
+
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceScreen;
 
+import com.example.jelenazivanovic.weatherforecastappmwp.R;
+import com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.di.DaggerSettingsFragmentComponent;
+import com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.di.SettingsFragmentModule;
+import com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.presenter.SettingsFragmentPresenter;
+import com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.view.SettingsFragmentView;
+
+import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 
 /**
@@ -36,7 +48,16 @@ import android.support.v7.preference.PreferenceScreen;
  * Mountain View, California.
  */
 public class SettingsFragment extends PreferenceFragmentCompat implements
-        SharedPreferences.OnSharedPreferenceChangeListener {
+        SharedPreferences.OnSharedPreferenceChangeListener, SettingsFragmentView {
+
+    @Inject
+    SettingsFragmentPresenter presenter;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        DaggerSettingsFragmentComponent.builder().settingsFragmentModule(new SettingsFragmentModule(this)).build().inject(this);
+    }
 
     private void setPreferenceSummary(Preference preference, Object value) {
         String stringValue = value.toString();
@@ -60,16 +81,19 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
         // Add 'general' preferences, defined in the XML file
         addPreferencesFromResource(R.xml.pref_general);
 
+        DaggerSettingsFragmentComponent.builder().settingsFragmentModule(new SettingsFragmentModule(this)).build().inject(this);
+
         SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
         PreferenceScreen prefScreen = getPreferenceScreen();
-        int count = prefScreen.getPreferenceCount();
-        for (int i = 0; i < count; i++) {
-            Preference p = prefScreen.getPreference(i);
-            if (!(p instanceof CheckBoxPreference)) {
-                String value = sharedPreferences.getString(p.getKey(), "");
-                setPreferenceSummary(p, value);
-            }
+        ArrayList<Preference> preferenceArrayList = new ArrayList<>();
+        for (int i =0; i<prefScreen.getPreferenceCount(); i++) {
+          Preference preference = prefScreen.getPreference(i);
+           preferenceArrayList.add(preference);
         }
+
+        presenter.provideToPresenter(sharedPreferences,preferenceArrayList);
+
+
     }
 
     @Override
@@ -92,6 +116,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Activity activity = getActivity();
 
+       presenter.sendSharedPreferenceAndKey(sharedPreferences,key);
+
+
 //        if (key.equals(getString(R.string.pref_location_key))) {
 //            // we've changed the location
 //            // Wipe out any potential PlacePicker latlng values so that we can use this text entry.
@@ -108,5 +135,11 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
 //            }
 //        }
 //    }
+    }
+
+    @Override
+    public void getResults(Preference preference, Object value) {
+        setPreferenceSummary(preference,value);
+
     }
 }

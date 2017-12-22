@@ -1,6 +1,6 @@
 package com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.di;
 
-import com.example.jelenazivanovic.weatherforecastappmwp.MainActivity;
+import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.view.MainActivity;
 import com.example.jelenazivanovic.weatherforecastappmwp.retrofit.di.RetrofitModule;
 
 import dagger.Component;
