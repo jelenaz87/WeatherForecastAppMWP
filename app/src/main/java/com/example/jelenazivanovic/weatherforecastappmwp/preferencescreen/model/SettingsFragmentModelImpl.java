@@ -1,6 +1,7 @@
 package com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.model;
 
 
+import android.content.Context;
 import android.content.SharedPreferences;
 
 import android.support.v7.preference.CheckBoxPreference;
@@ -8,6 +9,7 @@ import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceScreen;
 
+import com.example.jelenazivanovic.weatherforecastappmwp.R;
 import com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.presenter.SettingsFragmentPresenter;
 
 import java.util.ArrayList;
@@ -41,7 +43,22 @@ public class SettingsFragmentModelImpl implements SettingsFragmentModel {
     }
 
     @Override
-    public void sendSharedPreferenceAndKey(SharedPreferences preferences, String key) {
+    public void sendResultOnSharedPreferenceChangeListenerToModel(String key, Context mContext, SharedPreferences preferences) {
+        if (key.equals(mContext.getString(R.string.pref_location_key))) {
+//            // we've changed the location
+//            // Wipe out any potential PlacePicker latlng values so that we can use this text entry.
+//            SunshinePreferences.resetLocationCoordinates(activity);
+//           new CheckForEmptyRunnable(activity).startImmediateSync(activity);
+        } else if (key.equals(mContext.getString(R.string.pref_units_key))) {
+//            // units have changed. update lists of weather entries accordingly
+//            activity.getContentResolver().notifyChange(WeatherContract.WeatherEntry.CONTENT_URI, null);
+        }
+
+        presenter.getResultOnSharedPreferenceChangeListener(preferences, key);
+    }
+
+//    @Override
+//    public void sendSharedPreferenceAndKey() {
      //   if (key.equals(getString(R.string.pref_location_key))) {
 //            // we've changed the location
 //            // Wipe out any potential PlacePicker latlng values so that we can use this text entry.
@@ -51,5 +68,5 @@ public class SettingsFragmentModelImpl implements SettingsFragmentModel {
 //            // units have changed. update lists of weather entries accordingly
 //            activity.getContentResolver().notifyChange(WeatherContract.WeatherEntry.CONTENT_URI, null);
 //        }
-    }
+  //  }
 }

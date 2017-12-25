@@ -1,5 +1,6 @@
 package com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.model;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 
 import android.support.v7.preference.Preference;
@@ -14,6 +15,6 @@ import java.util.ArrayList;
 public interface SettingsFragmentModel {
 
     void sendSharedPreferenceAndPreference (SharedPreferences sharedPreferences, ArrayList<Preference> list);
-    void sendSharedPreferenceAndKey (SharedPreferences preferences, String key);
+    void sendResultOnSharedPreferenceChangeListenerToModel (String key, Context mContext, SharedPreferences preferences);
 
 }

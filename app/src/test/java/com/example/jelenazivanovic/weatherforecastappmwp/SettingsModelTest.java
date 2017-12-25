@@ -61,7 +61,7 @@ public class SettingsModelTest {
     public void invokePresenterMethod() throws Exception {
         when(list.size()).thenReturn(3);
         when(list.get(anyInt())).thenReturn(preference);
-       classUnderTest.sendSharedPreferenceAndPreference(sharedPreferences,list);
+        classUnderTest.sendSharedPreferenceAndPreference(sharedPreferences,list);
      //  verify(presenter).getValueForPreferenceScreen(preferenceArgumentCaptor.capture(),value.capture());
         verify(presenter, atLeast(3)).getValueForPreferenceScreen(preferenceArgumentCaptor.capture(),value.capture());
 

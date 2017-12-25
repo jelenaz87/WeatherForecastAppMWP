@@ -1,5 +1,6 @@
 package com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.presenter;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.preference.Preference;
 
@@ -39,8 +40,14 @@ public class SettingsFragmentPresenterImpl implements SettingsFragmentPresenter{
     }
 
     @Override
-    public void sendSharedPreferenceAndKey(SharedPreferences preferences, String key) {
-        model.sendSharedPreferenceAndKey(preferences,key);
+    public void sendKey(String key, Context mContext, SharedPreferences preferences) {
+      model.sendResultOnSharedPreferenceChangeListenerToModel(key,mContext, preferences);
+    }
+
+    @Override
+    public void getResultOnSharedPreferenceChangeListener(SharedPreferences preferences, String key) {
+        view.getResultOnSharedPreferenceChangeListenerPresenter(preferences, key);
 
     }
+
 }

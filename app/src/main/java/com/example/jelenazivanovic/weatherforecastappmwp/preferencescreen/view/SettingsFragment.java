@@ -16,9 +16,11 @@
 package com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.view;
 
 import android.app.Activity;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+
 
 import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.ListPreference;
@@ -31,7 +33,7 @@ import com.example.jelenazivanovic.weatherforecastappmwp.R;
 import com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.di.DaggerSettingsFragmentComponent;
 import com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.di.SettingsFragmentModule;
 import com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.presenter.SettingsFragmentPresenter;
-import com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.view.SettingsFragmentView;
+
 
 import java.util.ArrayList;
 
@@ -86,12 +88,12 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
         SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
         PreferenceScreen prefScreen = getPreferenceScreen();
         ArrayList<Preference> preferenceArrayList = new ArrayList<>();
-        for (int i =0; i<prefScreen.getPreferenceCount(); i++) {
-          Preference preference = prefScreen.getPreference(i);
-           preferenceArrayList.add(preference);
+        for (int i = 0; i < prefScreen.getPreferenceCount(); i++) {
+            Preference preference = prefScreen.getPreference(i);
+            preferenceArrayList.add(preference);
         }
 
-        presenter.provideToPresenter(sharedPreferences,preferenceArrayList);
+        presenter.provideToPresenter(sharedPreferences, preferenceArrayList);
 
 
     }
@@ -114,12 +116,13 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Activity activity = getActivity();
 
-       presenter.sendSharedPreferenceAndKey(sharedPreferences,key);
+        DaggerSettingsFragmentComponent.builder().settingsFragmentModule(new SettingsFragmentModule(this)).build().inject(this);
+        Context mContext = getActivity().getBaseContext();
+        presenter.sendKey(key, mContext, sharedPreferences);
 
 
-//        if (key.equals(getString(R.string.pref_location_key))) {
+        //        if (key.equals(getString(R.string.pref_location_key))) {
 //            // we've changed the location
 //            // Wipe out any potential PlacePicker latlng values so that we can use this text entry.
 //            SunshinePreferences.resetLocationCoordinates(activity);
@@ -139,7 +142,17 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
 
     @Override
     public void getResults(Preference preference, Object value) {
-        setPreferenceSummary(preference,value);
+        setPreferenceSummary(preference, value);
 
+    }
+
+    @Override
+    public void getResultOnSharedPreferenceChangeListenerPresenter(SharedPreferences preferences, String key) {
+        Preference preference = findPreference(key);
+        if (null != preference) {
+            if (!(preference instanceof CheckBoxPreference)) {
+                setPreferenceSummary(preference, preferences.getString(key, ""));
+            }
+        }
     }
 }
