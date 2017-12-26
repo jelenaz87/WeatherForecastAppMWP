@@ -9,9 +9,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.jelenazivanovic.weatherforecastappmwp.R;
+import com.example.jelenazivanovic.weatherforecastappmwp.data.Weather;
+import com.example.jelenazivanovic.weatherforecastappmwp.utilities.SunshineDateUtils;
 import com.example.jelenazivanovic.weatherforecastappmwp.utilities.SunshineWeatherUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jelena.zivanovic on 12/20/2017.
@@ -48,7 +51,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
      */
     //  private boolean mUseTodayLayout;
     private int orient = 0;
-    private ArrayList<WeatherObj> list;
+    private List<Weather> list;
 
     /**
      * Creates a ForecastAdapter.
@@ -114,11 +117,18 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
      */
     @Override
     public void onBindViewHolder(ForecastAdapterViewHolder forecastAdapterViewHolder, int position) {
-
-        forecastAdapterViewHolder.dateView.setText(list.get(position).date);
-        forecastAdapterViewHolder.descriptionView.setText(list.get(position).description);
-        forecastAdapterViewHolder.lowTempView.setText(list.get(position).lowTemp);
-        forecastAdapterViewHolder.highTempView.setText(list.get(position).highTemp);
+        long date = list.get(position).getDateTimeMillis();
+        String dateString = SunshineDateUtils.getFriendlyDateString(mContext, date, false);
+        forecastAdapterViewHolder.dateView.setText(dateString);
+        int weatherId = list.get(position).getWeatherId();
+        String description = SunshineWeatherUtils.getStringForWeatherCondition(mContext, weatherId);
+        forecastAdapterViewHolder.descriptionView.setText(description);
+        double minTemp = list.get(position).getMinTemperature();
+        String min = SunshineWeatherUtils.formatTemperature(mContext, minTemp);
+        forecastAdapterViewHolder.lowTempView.setText(min);
+        double maxTemp = list.get(position).getMaxTemperature();
+        String max =  SunshineWeatherUtils.formatTemperature(mContext, maxTemp);
+        forecastAdapterViewHolder.highTempView.setText(max);
 
         int viewType = getItemViewType(position);
         int weatherImageId;
@@ -127,12 +137,12 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 
             case VIEW_TYPE_TODAY:
                 weatherImageId = SunshineWeatherUtils
-                        .getLargeArtResourceIdForWeatherCondition(list.get(position).weatherId);
+                        .getLargeArtResourceIdForWeatherCondition(list.get(position).getWeatherId());
                 break;
 
             case VIEW_TYPE_FUTURE_DAY:
                 weatherImageId = SunshineWeatherUtils
-                        .getSmallArtResourceIdForWeatherCondition(list.get(position).weatherId);
+                        .getSmallArtResourceIdForWeatherCondition(list.get(position).getWeatherId());
                 break;
 
             default:
@@ -223,7 +233,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
     }
 
 }
-    public void swapCursor(ArrayList<WeatherObj> list) {
+    public void swapCursor(List<Weather> list) {
         this.list = list;
         notifyDataSetChanged();
     }

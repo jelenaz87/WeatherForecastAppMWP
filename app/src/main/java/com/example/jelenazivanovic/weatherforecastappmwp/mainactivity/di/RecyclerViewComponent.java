@@ -11,5 +11,5 @@ import dagger.Component;
 @Component (modules = {RecyclerViewModule.class, RetrofitModule.class, ActivityContextModule.class})
 public interface RecyclerViewComponent {
 
-    void inject (MainActivity mainActivity);
+   // void inject (MainActivity mainActivity);
 }

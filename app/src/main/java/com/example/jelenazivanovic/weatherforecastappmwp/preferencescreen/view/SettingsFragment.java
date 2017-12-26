@@ -30,6 +30,8 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceScreen;
 
 import com.example.jelenazivanovic.weatherforecastappmwp.R;
+
+
 import com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.di.DaggerSettingsFragmentComponent;
 import com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.di.SettingsFragmentModule;
 import com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.presenter.SettingsFragmentPresenter;

@@ -6,6 +6,7 @@ import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.presenter.
 import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.presenter.RecyclerViewPresenterImpl;
 import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.view.RecyclerViewView;
 import com.example.jelenazivanovic.weatherforecastappmwp.retrofit.apiservice.ServiceApi;
+import com.example.jelenazivanovic.weatherforecastappmwp.retrofitmountaintview.serviceApiMountainView.MountainViewApi;
 
 import dagger.Module;
 import dagger.Provides;
@@ -28,8 +29,8 @@ public class RecyclerViewModule {
     }
 
     @Provides
-    RecyclerViewPresenter getRecyclerViewPresenter (RecyclerViewView view, ServiceApi mServiceApi, Context mContext) {
-        return new RecyclerViewPresenterImpl(view, mServiceApi, mContext);
+    RecyclerViewPresenter getRecyclerViewPresenter (RecyclerViewView view, MountainViewApi api, Context mContext) {
+        return new RecyclerViewPresenterImpl(view, api, mContext);
     }
 
 

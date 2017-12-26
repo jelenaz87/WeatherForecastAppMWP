@@ -6,6 +6,9 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by jelena.zivanovic on 12/25/2017.
  */
@@ -13,13 +16,13 @@ import android.arch.persistence.room.Query;
 public interface WeatherDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertWeatherObject (Weather... weathers);
+    List<Long> insertWeatherObject (Weather... weathers);
 
    @Query("SELECT * FROM weather")
-   Weather[] loadAllWeatherObject();
+   List<Weather> loadAllWeatherObject();
 
    @Query("SELECT * FROM weather WHERE dateTimeMillis > :date")
-   Weather[] loadAllDateOlderThan(long date);
+   List<Weather> loadAllDateOlderThan(long date);
 
     @Delete
     void deleteWeather(Weather... weathers);

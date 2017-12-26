@@ -1,6 +1,7 @@
 package com.example.jelenazivanovic.weatherforecastappmwp.data;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
@@ -21,6 +22,22 @@ public class Weather {
     private int humidity;
     private double windSpeed;
     private double windDirection;
+
+    @Ignore
+    public Weather () {
+
+    }
+
+    public Weather (long dateTimeMillis, int weatherId, double minTemperature, double maxTemperature, double pressure, int humidity, double windSpeed, double windDirection) {
+      this.dateTimeMillis = dateTimeMillis;
+      this.weatherId = weatherId;
+      this.minTemperature = minTemperature;
+      this.maxTemperature = maxTemperature;
+      this.pressure = pressure;
+      this.humidity = humidity;
+      this.windSpeed = windSpeed;
+      this.windDirection = windDirection;
+    }
 
     public int getId() {
         return id;

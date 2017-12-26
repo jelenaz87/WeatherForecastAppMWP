@@ -15,10 +15,10 @@ public abstract class WeatherDatabase extends RoomDatabase {
 
     private static WeatherDatabase weatherDatabaseInstance;
 
-    public WeatherDatabase getWeatherDatabaseInstance (Context context) {
+    public static WeatherDatabase getWeatherDatabaseInstance (Context context) {
         if (weatherDatabaseInstance == null) {
             weatherDatabaseInstance =
-                    Room.databaseBuilder(context.getApplicationContext(), WeatherDatabase.class, "weather_database").build();
+                    Room.databaseBuilder(context.getApplicationContext(), WeatherDatabase.class, "weather_database").allowMainThreadQueries().build();
         }
         return weatherDatabaseInstance;
     }

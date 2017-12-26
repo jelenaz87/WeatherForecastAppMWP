@@ -21,6 +21,8 @@
         </activity>
 
         <activity android:name=".preferencescreen.view.SettingsActivity"> </activity>
+
     </application>
+
 
 </manifest>
