@@ -35,7 +35,7 @@ public class DatabaseInsertWeatherInfo {
     }
 
     public void databaseInsertWeatherInfo(WeatherObject weatherObject) {
-        if ( sInitialized != null) {
+       // if ( sInitialized != null) {
             int y = 0;
             long normalizedUtcStartDay = SunshineDateUtils.getNormalizedUtcDateForToday();
 
@@ -61,14 +61,14 @@ public class DatabaseInsertWeatherInfo {
 
                 Weather weather = new Weather(dateTimeMillis, weatherId, tempMinInCelsius, tempMaxInCelsius, pressure, humidity, windSpeed, windDirection);
                 mList.add(weather);
-                sInitialized = database.weatherDao().insertWeatherObject(weather);
+           //     sInitialized = database.weatherDao().insertWeatherObject(weather);
 
                 y++;
                 i = i + 7;
             }
         }
 
-    }
+
 
     public List<Weather> readDatabaseWeatherInfo () {
       return database.weatherDao().loadAllWeatherObject();
