@@ -26,7 +26,7 @@ public class RecyclerViewPresenterImpl implements RecyclerViewPresenter{
     public RecyclerViewPresenterImpl(RecyclerViewView view, Context context) {
         this.view = view;
         this.mContext = context;
-        this.model = new RecyclerViewModelImpl(this);
+        this.model = new RecyclerViewModelImpl(this, context);
     }
     @Override
     public void invokePresenter() {
@@ -35,16 +35,9 @@ public class RecyclerViewPresenterImpl implements RecyclerViewPresenter{
     }
 
     @Override
-    public void updateWeather(Object object) {
-        DatabaseInsertWeatherInfo weatherInfo = new DatabaseInsertWeatherInfo(mContext);
-        List<Weather> list = weatherInfo.readDatabaseWeatherInfo();
+    public void updateWeather(List<Weather> mList) {
 
-        if (list.size() == 0 || list.isEmpty()) {
-            weatherInfo.insertData(object);
-            list =weatherInfo.readDatabaseWeatherInfo();
-        }
-
-            view.lisOfWeather(list);
+            view.lisOfWeather(mList);
 
 
     }
