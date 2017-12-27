@@ -13,7 +13,6 @@ import com.example.jelenazivanovic.weatherforecastappmwp.retrofitmountaintview.s
 public interface RecyclerViewPresenter {
 
     void invokePresenter ();
-    void updateWeatherInfo (WeatherObject weatherObject);
-    void updateWeather (WeatherMountainView object);
+    void updateWeather (Object object);
 
 }

@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import com.example.jelenazivanovic.weatherforecastappmwp.R;
 import com.example.jelenazivanovic.weatherforecastappmwp.data.Weather;
 
+import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.di.DaggerRecyclerViewComponent;
 import com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.view.SettingsActivity;
 
 import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.di.ActivityContextModule;
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-       DaggerMountainViewComponent.builder().recyclerViewModule(new RecyclerViewModule(this)).activityContextModule(new ActivityContextModule(getApplicationContext())).build().provide(this);
+       DaggerRecyclerViewComponent.builder().recyclerViewModule(new RecyclerViewModule(this)).activityContextModule(new ActivityContextModule(getApplicationContext())).build().inject(this);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_forecast);
         LinearLayoutManager layoutManager =

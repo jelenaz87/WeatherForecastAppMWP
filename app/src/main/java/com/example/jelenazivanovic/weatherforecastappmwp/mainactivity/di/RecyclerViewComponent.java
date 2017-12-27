@@ -8,8 +8,8 @@ import dagger.Component;
 /**
  * Created by jelena.zivanovic on 12/20/2017.
  */
-@Component (modules = {RecyclerViewModule.class, RetrofitModule.class, ActivityContextModule.class})
+@Component (modules = {RecyclerViewModule.class, ActivityContextModule.class})
 public interface RecyclerViewComponent {
 
-   // void inject (MainActivity mainActivity);
+    void inject (MainActivity mainActivity);
 }

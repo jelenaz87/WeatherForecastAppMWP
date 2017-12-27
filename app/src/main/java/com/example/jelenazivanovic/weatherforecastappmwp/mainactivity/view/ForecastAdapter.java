@@ -52,6 +52,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
     //  private boolean mUseTodayLayout;
     private int orient = 0;
     private List<Weather> list;
+    private String city;
 
     /**
      * Creates a ForecastAdapter.
@@ -117,40 +118,40 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
      */
     @Override
     public void onBindViewHolder(ForecastAdapterViewHolder forecastAdapterViewHolder, int position) {
-        long date = list.get(position).getDateTimeMillis();
-        String dateString = SunshineDateUtils.getFriendlyDateString(mContext, date, false);
-        forecastAdapterViewHolder.dateView.setText(dateString);
-        int weatherId = list.get(position).getWeatherId();
-        String description = SunshineWeatherUtils.getStringForWeatherCondition(mContext, weatherId);
-        forecastAdapterViewHolder.descriptionView.setText(description);
-        double minTemp = list.get(position).getMinTemperature();
-        String min = SunshineWeatherUtils.formatTemperature(mContext, minTemp);
-        forecastAdapterViewHolder.lowTempView.setText(min);
-        double maxTemp = list.get(position).getMaxTemperature();
-        String max =  SunshineWeatherUtils.formatTemperature(mContext, maxTemp);
-        forecastAdapterViewHolder.highTempView.setText(max);
 
-        int viewType = getItemViewType(position);
-        int weatherImageId;
+            long date = list.get(position).getDateTimeMillis();
+            String dateString = SunshineDateUtils.getFriendlyDateString(mContext, date, false);
+            forecastAdapterViewHolder.dateView.setText(dateString);
+            int weatherId = list.get(position).getWeatherId();
+            String description = SunshineWeatherUtils.getStringForWeatherCondition(mContext, weatherId);
+            forecastAdapterViewHolder.descriptionView.setText(description);
+            double minTemp = list.get(position).getMinTemperature();
+            String min = SunshineWeatherUtils.formatTemperature(mContext, minTemp);
+            forecastAdapterViewHolder.lowTempView.setText(min);
+            double maxTemp = list.get(position).getMaxTemperature();
+            String max = SunshineWeatherUtils.formatTemperature(mContext, maxTemp);
+            forecastAdapterViewHolder.highTempView.setText(max);
 
-        switch (viewType) {
+            int viewType = getItemViewType(position);
+            int weatherImageId;
 
-            case VIEW_TYPE_TODAY:
-                weatherImageId = SunshineWeatherUtils
-                        .getLargeArtResourceIdForWeatherCondition(list.get(position).getWeatherId());
-                break;
+            switch (viewType) {
 
-            case VIEW_TYPE_FUTURE_DAY:
-                weatherImageId = SunshineWeatherUtils
-                        .getSmallArtResourceIdForWeatherCondition(list.get(position).getWeatherId());
-                break;
+                case VIEW_TYPE_TODAY:
+                    weatherImageId = SunshineWeatherUtils
+                            .getLargeArtResourceIdForWeatherCondition(list.get(position).getWeatherId());
+                    break;
 
-            default:
-                throw new IllegalArgumentException("Invalid view type, value of " + viewType);
-        }
+                case VIEW_TYPE_FUTURE_DAY:
+                    weatherImageId = SunshineWeatherUtils
+                            .getSmallArtResourceIdForWeatherCondition(list.get(position).getWeatherId());
+                    break;
 
-        forecastAdapterViewHolder.iconView.setImageResource(weatherImageId);
+                default:
+                    throw new IllegalArgumentException("Invalid view type, value of " + viewType);
+            }
 
+            forecastAdapterViewHolder.iconView.setImageResource(weatherImageId);
 
     }
 
@@ -235,6 +236,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 }
     public void swapCursor(List<Weather> list) {
         this.list = list;
+
         notifyDataSetChanged();
     }
 
