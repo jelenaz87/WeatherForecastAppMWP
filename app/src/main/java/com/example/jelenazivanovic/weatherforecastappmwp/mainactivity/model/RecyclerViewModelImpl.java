@@ -30,11 +30,14 @@ public class RecyclerViewModelImpl  implements RecyclerViewModel, IsResponseSucc
 
     }
 
+    //this for testing purpose only
+    public void setData(DataFromInternet data) {
+        this.data = data;
+    }
 
     @Override
     public void getWeatherResults() {
         data.getDataFromInternet("Belgrade");
-
     }
 
     @Override

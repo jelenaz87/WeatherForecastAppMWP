@@ -24,7 +24,7 @@ public class DataFromInternet {
 
 
     }
-    public DataFromInternet ( IsResponseSuccesfull responseSuccesfull) {
+    public DataFromInternet (IsResponseSuccesfull responseSuccesfull) {
 
         this.weatherObjectBelgrade = null;
         this.weatherObjectMountainView = null;
@@ -32,7 +32,7 @@ public class DataFromInternet {
 
     }
 
-    private void getDataForBelgrade () {
+    public void getDataForBelgrade () {
         Call<WeatherObject> objectCall = ApiServiceClient.getResponseFromServiceApiForBelgrade().getWeatherObject();
         objectCall.enqueue(new Callback<WeatherObject>() {
             @Override
@@ -49,15 +49,16 @@ public class DataFromInternet {
 
     }
 
-    private void getDataForMountainView () {
+    public void getDataForMountainView () {
 
         Call<WeatherMountainView> objectCall = ApiServiceClient.getResponseFromServiceApiForMountainView().getWeather();
         objectCall.enqueue(new Callback<WeatherMountainView>() {
           @Override
           public void onResponse(Call<WeatherMountainView> call, Response<WeatherMountainView> response) {
-              weatherObjectMountainView = response.body();
-              isResponseSuccesfull.getResponse(weatherObjectMountainView);
-
+              if (response.isSuccessful()) {
+                  weatherObjectMountainView = response.body();
+                  isResponseSuccesfull.getResponse(weatherObjectMountainView);
+              }
           }
 
           @Override

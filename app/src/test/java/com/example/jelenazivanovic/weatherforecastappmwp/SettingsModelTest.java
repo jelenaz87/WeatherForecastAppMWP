@@ -64,13 +64,5 @@ public class SettingsModelTest {
         classUnderTest.sendSharedPreferenceAndPreference(sharedPreferences,list);
      //  verify(presenter).getValueForPreferenceScreen(preferenceArgumentCaptor.capture(),value.capture());
         verify(presenter, atLeast(3)).getValueForPreferenceScreen(preferenceArgumentCaptor.capture(),value.capture());
-
-
-
-
-
-
-
-
     }
 }

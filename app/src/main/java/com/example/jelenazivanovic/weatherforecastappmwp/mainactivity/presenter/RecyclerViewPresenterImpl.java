@@ -28,6 +28,11 @@ public class RecyclerViewPresenterImpl implements RecyclerViewPresenter{
         this.mContext = context;
         this.model = new RecyclerViewModelImpl(this, context);
     }
+    //this is for testing purpose only
+    public void setModel(RecyclerViewModel model) {
+        this.model = model;
+    }
+
     @Override
     public void invokePresenter() {
         model.getWeatherResults();
