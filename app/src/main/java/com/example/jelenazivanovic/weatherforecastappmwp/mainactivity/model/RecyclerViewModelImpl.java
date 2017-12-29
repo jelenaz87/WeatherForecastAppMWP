@@ -20,6 +20,7 @@ public class RecyclerViewModelImpl  implements RecyclerViewModel, IsResponseSucc
     private RecyclerViewPresenter presenter;
     private DataFromInternet data;
     private Context mContext;
+    private DatabaseInsertWeatherInfo weatherInfo;
 
 
 
@@ -27,12 +28,17 @@ public class RecyclerViewModelImpl  implements RecyclerViewModel, IsResponseSucc
         this.presenter = presenter;
         this.mContext = context;
         this.data = new DataFromInternet(this);
+        this.weatherInfo = new DatabaseInsertWeatherInfo(mContext);
 
     }
 
     //this for testing purpose only
     public void setData(DataFromInternet data) {
         this.data = data;
+    }
+    //this for testing purpose only
+    public void setWeatherInfo(DatabaseInsertWeatherInfo weatherInfo) {
+        this.weatherInfo = weatherInfo;
     }
 
     @Override
@@ -42,7 +48,6 @@ public class RecyclerViewModelImpl  implements RecyclerViewModel, IsResponseSucc
 
     @Override
     public void getResponse(Object data) {
-        DatabaseInsertWeatherInfo weatherInfo = new DatabaseInsertWeatherInfo(mContext);
         List<Weather> list = weatherInfo.readDatabaseWeatherInfo();
 
         if (list.size() == 0 || list.isEmpty()) {

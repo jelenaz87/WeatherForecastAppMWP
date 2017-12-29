@@ -15,6 +15,7 @@ import com.example.jelenazivanovic.weatherforecastappmwp.retrofit.models.Weather
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -71,8 +72,10 @@ public class RecyclerModelTest {
 
     @Before
     public void setUp() throws Exception {
+
        classUnderTest = new RecyclerViewModelImpl(presenter, context);
        classUnderTest.setData(data);
+       classUnderTest.setWeatherInfo(weatherInfo);
     }
 
     @Test
@@ -93,41 +96,36 @@ public class RecyclerModelTest {
     }
 
 
-    @Test
-    public void testGetResponse () throws Exception{
 
-//        classUnderTest.getResponse(weatherObject);
-//        verify(presenter).updateWeather(mList.capture());
-    }
 
-    @Test
-    public void testReadFromDatabase () {
-        data.getDataFromInternet("Belgrade");
-        when (weatherList.size()).thenReturn(0);
-        weatherInfo.insertData(weatherObject);
-        assertFalse(weatherList.isEmpty());
-    }
-
-    @Test
-    public void testGetListForMountainView () {
-        data.getDataFromInternet("MountainView");
-        when (weatherList.size()).thenReturn(0);
-        weatherInfo.insertData(weatherObject);
-        assertFalse(weatherList.isEmpty());
-    }
-
-    @Test
-    public void testResponseIsSucceful () {
-        data.getDataFromInternet("Belgrade");
-        Call<WeatherObject> objectCall = ApiServiceClient.getResponseFromServiceApiForBelgrade().getWeatherObject();
-        Response<WeatherObject> response = null;
-        try {
-            response = objectCall.execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        WeatherObject object = response.body();
-        assertTrue(response.isSuccessful());
-    }
-    }
+//    @Test
+//    public void testReadFromDatabase () {
+//        data.getDataFromInternet("Belgrade");
+//        when (weatherList.size()).thenReturn(0);
+//        weatherInfo.insertData(weatherObject);
+//        assertFalse(weatherList.isEmpty());
+//    }
+//
+//    @Test
+//    public void testGetListForMountainView () {
+//        data.getDataFromInternet("MountainView");
+//        when (weatherList.size()).thenReturn(0);
+//        weatherInfo.insertData(weatherObject);
+//        assertFalse(weatherList.isEmpty());
+//    }
+//
+//    @Test
+//    public void testResponseIsSucceful () {
+//        data.getDataFromInternet("Belgrade");
+//        Call<WeatherObject> objectCall = ApiServiceClient.getResponseFromServiceApiForBelgrade().getWeatherObject();
+//        Response<WeatherObject> response = null;
+//        try {
+//            response = objectCall.execute();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        WeatherObject object = response.body();
+//        assertTrue(response.isSuccessful());
+//    }
+}
 

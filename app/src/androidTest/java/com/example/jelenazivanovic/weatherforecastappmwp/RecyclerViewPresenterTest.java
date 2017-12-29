@@ -1,13 +1,12 @@
 package com.example.jelenazivanovic.weatherforecastappmwp;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.example.jelenazivanovic.weatherforecastappmwp.data.Weather;
 import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.DataFromInternet;
 import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.model.RecyclerViewModel;
-import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.model.RecyclerViewModelImpl;
-import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.presenter.RecyclerViewPresenter;
 import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.presenter.RecyclerViewPresenterImpl;
 import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.view.RecyclerViewView;
 import com.example.jelenazivanovic.weatherforecastappmwp.retrofit.models.WeatherObject;
@@ -15,58 +14,65 @@ import com.example.jelenazivanovic.weatherforecastappmwp.retrofit.models.Weather
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 
 import java.util.List;
 
-import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
- * Created by jelena.zivanovic on 12/28/2017.
+ * Created by jelena.zivanovic on 12/29/2017.
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(AndroidJUnit4.class)
 public class RecyclerViewPresenterTest {
 
     private RecyclerViewPresenterImpl classUnderTest;
 
-    @Mock
+
     private RecyclerViewView view;
-    @Mock
-    private Context context;
-    @Mock
+
     private List<Weather> mList;
-    @Mock
+
+    ArgumentCaptor<List<Weather>> listArgumentCaptor;
+
     private RecyclerViewModel model;
-    @Mock
-    private DataFromInternet data;
-    @Mock
-    private WeatherObject weatherObject;
+
+
 
     @Before
     public void setUp() throws Exception {
+        view = mock(RecyclerViewView.class);
+        mList = mock(List.class);
+        listArgumentCaptor = ArgumentCaptor.forClass((Class) List.class);
+        model = mock(RecyclerViewModel.class);
+        Context context = InstrumentationRegistry.getTargetContext();
         classUnderTest = new RecyclerViewPresenterImpl(view, context);
         classUnderTest.setModel(model);
+
     }
 
     @Test
     public void testInvokePresenter () {
-        Weather mWeather = new Weather();
-        mList.add(mWeather);
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-
-                data.getDataFromInternet("Belgrade");
-
-                return weatherObject;
-            }
-        }).when(model).getWeatherResults();
+       Weather mWeather = new Weather(12,15,18,30,25,33,25,58);
+        when(mList.size()).thenReturn(1);
+        when(mList.get(anyInt())).thenReturn(mWeather);
         classUnderTest.invokePresenter();
-        verify(data).getDataFromInternet("Belgrade");
+        verify(model,atLeastOnce()).getWeatherResults();
+    }
+
+    @Test
+    public void testUpdateWeather() {
+        Weather mWeather = new Weather(12,15,18,30,25,33,25,58);
+        when(mList.size()).thenReturn(1);
+        when(mList.get(anyInt())).thenReturn(mWeather);
+        classUnderTest.updateWeather(mList);
+        verify(view).lisOfWeather(listArgumentCaptor.capture());
     }
 
 }
