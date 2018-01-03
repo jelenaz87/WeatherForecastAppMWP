@@ -19,7 +19,7 @@ import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.di.Activit
 
 import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.di.RecyclerViewModule;
 import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.presenter.RecyclerViewPresenter;
-import com.example.jelenazivanovic.weatherforecastappmwp.retrofitmountaintview.di.DaggerMountainViewComponent;
+
 
 
 import java.util.List;

@@ -11,6 +11,10 @@ import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.presenter.
 
 import java.util.List;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.schedulers.Schedulers;
+
 /**
  * Created by jelena.zivanovic on 12/20/2017.
  */
@@ -43,17 +47,40 @@ public class RecyclerViewModelImpl  implements RecyclerViewModel, IsResponseSucc
 
     @Override
     public void getWeatherResults() {
-        data.getDataFromInternet("Belgrade");
+        data.getDataFromInternet("MountainView", mContext).subscribeOn(Schedulers.io()).subscribe(new Subscriber<List<Weather>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List<Weather> weatherList) {
+                weatherInfo.insertData(weatherList);
+                List<Weather> list = weatherInfo.readDatabaseWeatherInfo();
+                presenter.updateWeather(list);
+
+            }
+        });
+
     }
 
-    @Override
-    public void getResponse(Object data) {
-        List<Weather> list = weatherInfo.readDatabaseWeatherInfo();
 
-        if (list.size() == 0 || list.isEmpty()) {
-            weatherInfo.insertData(data);
-            list = weatherInfo.readDatabaseWeatherInfo();
-        }
-        presenter.updateWeather(list);
+
+    @Override
+    public void getResponse(Observable<List<Weather>> datam) {
+
+//        List<Weather> list = weatherInfo.readDatabaseWeatherInfo();
+//
+//        if (list.size() == 0 || list.isEmpty()) {
+//
+//            weatherInfo.insertData(data);
+//            list = weatherInfo.readDatabaseWeatherInfo();
+//        }
+//        presenter.updateWeather(list);
     }
 }
