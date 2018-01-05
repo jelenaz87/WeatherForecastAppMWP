@@ -13,25 +13,27 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
  * Created by jelena.zivanovic on 12/20/2017.
  */
 
-public class RecyclerViewModelImpl  implements RecyclerViewModel, IsResponseSuccesfull{
+public class RecyclerViewModelImpl  implements RecyclerViewModel {
 
     private RecyclerViewPresenter presenter;
     private DataFromInternet data;
     private Context mContext;
     private DatabaseInsertWeatherInfo weatherInfo;
-
+    private boolean isInserted;
 
 
     public RecyclerViewModelImpl(RecyclerViewPresenter presenter, Context context) {
         this.presenter = presenter;
         this.mContext = context;
-        this.data = new DataFromInternet(this);
+        this.data = new DataFromInternet();
         this.weatherInfo = new DatabaseInsertWeatherInfo(mContext);
 
     }
@@ -40,6 +42,7 @@ public class RecyclerViewModelImpl  implements RecyclerViewModel, IsResponseSucc
     public void setData(DataFromInternet data) {
         this.data = data;
     }
+
     //this for testing purpose only
     public void setWeatherInfo(DatabaseInsertWeatherInfo weatherInfo) {
         this.weatherInfo = weatherInfo;
@@ -47,7 +50,20 @@ public class RecyclerViewModelImpl  implements RecyclerViewModel, IsResponseSucc
 
     @Override
     public void getWeatherResults() {
-        data.getDataFromInternet("MountainView", mContext).subscribeOn(Schedulers.io()).subscribe(new Subscriber<List<Weather>>() {
+
+        weatherInfo.isFatabaseEmpty().flatMap(new Func1<Boolean, Observable<List<Weather>>>() {
+            @Override
+            public Observable<List<Weather>> call(Boolean aBoolean) {
+                if (aBoolean) {
+                    isInserted = false;
+                   return data.getDataFromInternet("MountainView", mContext).subscribeOn(Schedulers.io()) ;
+                }
+                isInserted = true;
+                return weatherInfo.readFromBase();
+            }
+        }).subscribe(new Subscriber<List<Weather>>() {
+
+
             @Override
             public void onCompleted() {
 
@@ -60,27 +76,13 @@ public class RecyclerViewModelImpl  implements RecyclerViewModel, IsResponseSucc
 
             @Override
             public void onNext(List<Weather> weatherList) {
-                weatherInfo.insertData(weatherList);
-                List<Weather> list = weatherInfo.readDatabaseWeatherInfo();
-                presenter.updateWeather(list);
-
+                if (!isInserted) {
+                    weatherInfo.insertData(weatherList);
+                }
+                presenter.updateWeather(weatherList);
             }
         });
+    }
 
     }
 
-
-
-    @Override
-    public void getResponse(Observable<List<Weather>> datam) {
-
-//        List<Weather> list = weatherInfo.readDatabaseWeatherInfo();
-//
-//        if (list.size() == 0 || list.isEmpty()) {
-//
-//            weatherInfo.insertData(data);
-//            list = weatherInfo.readDatabaseWeatherInfo();
-//        }
-//        presenter.updateWeather(list);
-    }
-}

@@ -119,32 +119,30 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
     @Override
     public void onBindViewHolder(ForecastAdapterViewHolder forecastAdapterViewHolder, int position) {
 
-            long date = list.get(position).getDateTimeMillis();
-            String dateString = SunshineDateUtils.getFriendlyDateString(mContext, date, false);
-            forecastAdapterViewHolder.dateView.setText(dateString);
-            int weatherId = list.get(position).getWeatherId();
-            String description = SunshineWeatherUtils.getStringForWeatherCondition(mContext, weatherId);
-            forecastAdapterViewHolder.descriptionView.setText(description);
-            double minTemp = list.get(position).getMinTemperature();
-            String min = SunshineWeatherUtils.formatTemperature(mContext, minTemp);
-            forecastAdapterViewHolder.lowTempView.setText(min);
-            double maxTemp = list.get(position).getMaxTemperature();
-            String max = SunshineWeatherUtils.formatTemperature(mContext, maxTemp);
-            forecastAdapterViewHolder.highTempView.setText(max);
+
+            forecastAdapterViewHolder.dateView.setText( list.get(position).getDateTimeMillis());
+
+
+            forecastAdapterViewHolder.descriptionView.setText(list.get(position).getDescription());
+
+            forecastAdapterViewHolder.lowTempView.setText(list.get(position).getMinTemperature());
+
+            forecastAdapterViewHolder.highTempView.setText(list.get(position).getMaxTemperature());
 
             int viewType = getItemViewType(position);
             int weatherImageId;
+            int weatherId = list.get(position).getWeatherId();
 
-            switch (viewType) {
+           switch (viewType) {
 
                 case VIEW_TYPE_TODAY:
                     weatherImageId = SunshineWeatherUtils
-                            .getLargeArtResourceIdForWeatherCondition(list.get(position).getWeatherId());
+                            .getLargeArtResourceIdForWeatherCondition(weatherId);
                     break;
 
                 case VIEW_TYPE_FUTURE_DAY:
                     weatherImageId = SunshineWeatherUtils
-                            .getSmallArtResourceIdForWeatherCondition(list.get(position).getWeatherId());
+                            .getSmallArtResourceIdForWeatherCondition(weatherId);
                     break;
 
                 default:

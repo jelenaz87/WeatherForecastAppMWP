@@ -14,21 +14,22 @@ public class Weather {
     @PrimaryKey (autoGenerate = true)
     private int id;
 
-    private long dateTimeMillis;
+    private String dateTimeMillis;
     private int weatherId;
-    private double minTemperature;
-    private double maxTemperature;
+    private String minTemperature;
+    private String maxTemperature;
     private double pressure;
     private int humidity;
     private double windSpeed;
     private double windDirection;
+    String description;
 
     @Ignore
     public Weather () {
 
     }
 
-    public Weather (long dateTimeMillis, int weatherId, double minTemperature, double maxTemperature, double pressure, int humidity, double windSpeed, double windDirection) {
+    public Weather (String dateTimeMillis, int weatherId, String minTemperature, String maxTemperature, double pressure, int humidity, double windSpeed, double windDirection,String description) {
       this.dateTimeMillis = dateTimeMillis;
       this.weatherId = weatherId;
       this.minTemperature = minTemperature;
@@ -37,6 +38,7 @@ public class Weather {
       this.humidity = humidity;
       this.windSpeed = windSpeed;
       this.windDirection = windDirection;
+      this.description = description;
     }
 
     public int getId() {
@@ -47,11 +49,11 @@ public class Weather {
         this.id = id;
     }
 
-    public long getDateTimeMillis() {
+    public String getDateTimeMillis() {
         return dateTimeMillis;
     }
 
-    public void setDateTimeMillis(long dateTimeMillis) {
+    public void setDateTimeMillis(String dateTimeMillis) {
         this.dateTimeMillis = dateTimeMillis;
     }
 
@@ -63,19 +65,19 @@ public class Weather {
         this.weatherId = weatherId;
     }
 
-    public double getMinTemperature() {
+    public String getMinTemperature() {
         return minTemperature;
     }
 
-    public void setMinTemperature(double minTemperature) {
+    public void setMinTemperature(String minTemperature) {
         this.minTemperature = minTemperature;
     }
 
-    public double getMaxTemperature() {
+    public String getMaxTemperature() {
         return maxTemperature;
     }
 
-    public void setMaxTemperature(double maxTemperature) {
+    public void setMaxTemperature(String maxTemperature) {
         this.maxTemperature = maxTemperature;
     }
 
@@ -109,5 +111,13 @@ public class Weather {
 
     public void setWindDirection(double windDirection) {
         this.windDirection = windDirection;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

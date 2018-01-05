@@ -3,13 +3,13 @@ package com.example.jelenazivanovic.weatherforecastappmwp.mainactivity;
 import android.content.Context;
 
 import com.example.jelenazivanovic.weatherforecastappmwp.data.Weather;
-import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.presenter.IsResponseSuccesfull;
 import com.example.jelenazivanovic.weatherforecastappmwp.retrofit.models.WeatherObject;
 import com.example.jelenazivanovic.weatherforecastappmwp.retrofitmountaintview.models.WeatherInfo;
 import com.example.jelenazivanovic.weatherforecastappmwp.retrofitmountaintview.models.WeatherMountainView;
 import com.example.jelenazivanovic.weatherforecastappmwp.utilities.SunshineDateUtils;
 import com.example.jelenazivanovic.weatherforecastappmwp.utilities.SunshineWeatherUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -24,21 +24,16 @@ public class DataFromInternet {
 
    private WeatherObject weatherObjectBelgrade;
    private WeatherMountainView  weatherObjectMountainView;
-   private IsResponseSuccesfull isResponseSuccesfull;
     private List weatherList;
     private int i = 0;
     private int y = 0;
 
-    public DataFromInternet() {
 
-
-    }
-    public DataFromInternet (IsResponseSuccesfull responseSuccesfull) {
+    public DataFromInternet () {
 
         this.weatherObjectBelgrade = null;
         this.weatherObjectMountainView = null;
-        this.isResponseSuccesfull = responseSuccesfull;
-        this.weatherList = null;
+        this.weatherList = new ArrayList();
 
     }
 
@@ -59,13 +54,14 @@ public class DataFromInternet {
          return objectCall.map(new Func1<WeatherObject, List<Weather>>() {
              @Override
              public List<Weather> call(WeatherObject weatherObject) {
-                 List<Weather> list = getObservableListForBelgrade(weatherObject,mContext).toBlocking().single();
-                 List<Weather> weatherList = null;
-                 for (int i = 0; i<list.size(); i++) {
-                     weatherList.add(list.get(i));
-                     i = i+7;
-                 }
-                return weatherList;
+                 List<Weather> list =Observable.from(getObservableListForBelgrade(weatherObject,mContext).toBlocking().single()).filter(new Func1<Weather, Boolean>() {
+                     @Override
+                     public Boolean call(Weather weather) {
+
+                         return weather != null;
+                     }
+                 }).toList().toBlocking().single();
+                 return list;
 
              }
          });
@@ -93,9 +89,7 @@ public class DataFromInternet {
         return objectCall.map(new Func1<WeatherMountainView,List<Weather>>() {
             @Override
             public List<Weather> call(WeatherMountainView weatherMountainView) {
-                return getWeatherInfoFromWeathrObject (weatherMountainView,mContext).toBlocking().single();
-
-            }
+                return getWeatherInfoFromWeathrObject (weatherMountainView,mContext).toBlocking().single();            }
         });
     }
 
@@ -122,6 +116,7 @@ public class DataFromInternet {
             @Override
             public Weather call(WeatherInfo weatherInfo) {
                 Weather weather = null;
+
                 long normalizedUtcStartDay = SunshineDateUtils.getNormalizedUtcDateForToday();
                 long dateTimeMillis = normalizedUtcStartDay + SunshineDateUtils.DAY_IN_MILLIS * i;
                 String dateString = SunshineDateUtils.getFriendlyDateString(mContext, dateTimeMillis, false);
@@ -141,7 +136,7 @@ public class DataFromInternet {
                 double windSpeed = weatherInfo.getWindSpeed();
                 double windDirection = weatherInfo.getWindDirection();
 
-                weather = new Weather(dateTimeMillis, weatherId, tempMinInCelsius, tempMaxInCelsius, pressure, humidity, windSpeed, windDirection);
+                weather = new Weather(dateString, weatherId, minTemp, maxTemp, pressure, humidity, windSpeed, windDirection, description);
                 i++;
                 return weather;
             }
@@ -153,30 +148,32 @@ public class DataFromInternet {
         return Observable.from(weatherObject.getList()).map(new Func1<com.example.jelenazivanovic.weatherforecastappmwp.retrofit.models.WeatherInfo, Weather>() {
             @Override
             public Weather call(com.example.jelenazivanovic.weatherforecastappmwp.retrofit.models.WeatherInfo weatherInfo) {
-
+                Weather weather = null;
                 long normalizedUtcStartDay = SunshineDateUtils.getNormalizedUtcDateForToday();
+                if (i ==0 || i == 7 || i == 14 || i == 21 || i == 28 || i == 35 ) {
+                    long dateTimeMillis = normalizedUtcStartDay + SunshineDateUtils.DAY_IN_MILLIS * y;
+                    String dateString = SunshineDateUtils.getFriendlyDateString(mContext, dateTimeMillis, false);
+                    int weatherId = weatherInfo.getWeatherDetail().get(0).getWeatherId();
+                    String description = SunshineWeatherUtils.getStringForWeatherCondition(mContext, weatherId);
 
-                long dateTimeMillis = normalizedUtcStartDay + SunshineDateUtils.DAY_IN_MILLIS * y;
-                String dateString = SunshineDateUtils.getFriendlyDateString(mContext, dateTimeMillis, false);
-                int weatherId = weatherInfo.getWeatherDetail().get(0).getWeatherId();
-                String description = SunshineWeatherUtils.getStringForWeatherCondition(mContext, weatherId);
+                    double tempMinInFahrenheit = weatherInfo.getTemperatureObject().getMinTemperature();
+                    double tempMinInCelsius = tempMinInFahrenheit - 273.15;
+                    String minTemp = SunshineWeatherUtils.formatTemperature(mContext, tempMinInCelsius);
 
-                double tempMinInFahrenheit = weatherInfo.getTemperatureObject().getMinTemperature();
-                double tempMinInCelsius = tempMinInFahrenheit - 273.15;
-                String minTemp = SunshineWeatherUtils.formatTemperature(mContext, tempMinInCelsius);
+                    double tempMaxInFahrenheit = weatherInfo.getTemperatureObject().getMaxTemperature();
+                    double tempMaxInCelsius = tempMaxInFahrenheit - 273.15;
+                    String maxTemp = SunshineWeatherUtils.formatTemperature(mContext, tempMaxInCelsius);
 
-                double tempMaxInFahrenheit = weatherInfo.getTemperatureObject().getMaxTemperature();
-                double tempMaxInCelsius = tempMaxInFahrenheit - 273.15;
-                String maxTemp = SunshineWeatherUtils.formatTemperature(mContext, tempMaxInCelsius);
+                    double pressure = weatherInfo.getTemperatureObject().getPressure();
+                    int humidity = weatherInfo.getTemperatureObject().getHumidity();
+                    double windSpeed = weatherInfo.getWindInfo().getWindSpeed();
+                    double windDirection = weatherInfo.getWindInfo().getWindDirection();
 
-                double pressure = weatherInfo.getTemperatureObject().getPressure();
-                int humidity = weatherInfo.getTemperatureObject().getHumidity();
-                double windSpeed = weatherInfo.getWindInfo().getWindSpeed();
-                double windDirection = weatherInfo.getWindInfo().getWindDirection();
+                    weather = new Weather(dateString, weatherId, minTemp, maxTemp, pressure, humidity, windSpeed, windDirection, description);
 
-                Weather weather = new Weather(dateTimeMillis, weatherId, tempMinInCelsius, tempMaxInCelsius, pressure, humidity, windSpeed, windDirection);
-
-                y++;
+                    y++;
+                }
+                i++;
                 return weather;
             } }).toList();
     }

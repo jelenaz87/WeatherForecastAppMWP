@@ -9,6 +9,8 @@ import android.arch.persistence.room.Query;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
+
 /**
  * Created by jelena.zivanovic on 12/25/2017.
  */
@@ -21,10 +23,12 @@ public interface WeatherDao {
    @Query("SELECT * FROM weather")
    List<Weather> loadAllWeatherObject();
 
-   @Query("SELECT * FROM weather WHERE dateTimeMillis > :date")
+   @Query("SELECT * FROM weather WHERE dateTimeMillis >= :date")
    List<Weather> loadAllDateOlderThan(long date);
 
     @Delete
     void deleteWeather(Weather... weathers);
+
+
 
 }

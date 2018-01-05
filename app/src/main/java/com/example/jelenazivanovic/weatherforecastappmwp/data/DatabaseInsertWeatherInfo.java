@@ -12,6 +12,8 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Observer;
+import rx.Subscriber;
+import rx.functions.Func1;
 
 /**
  * Created by jelena.zivanovic on 12/26/2017.
@@ -35,88 +37,33 @@ public class DatabaseInsertWeatherInfo {
         this.mList = new ArrayList<>();
     }
 
-    public void databaseInsertWeatherInfo(WeatherObject weatherObject) {
-        // if ( sInitialized != null) {
+    public Observable<Boolean> isFatabaseEmpty () {
 
+      return Observable.create(new Observable.OnSubscribe<Boolean>() {
+          @Override
+          public void call(Subscriber<? super Boolean> subscriber) {
+              try {
+                  subscriber.onNext(database.weatherDao().loadAllWeatherObject().isEmpty());
+                  subscriber.onCompleted();     // Signal about the completion subscriber
+              } catch (Exception e) {
+                  subscriber.onError(e);        // Signal about the error to subscriber
+              }
+          }
+      });
     }
 
-
     public List<Weather> readDatabaseWeatherInfo() {
+
         return database.weatherDao().loadAllWeatherObject();
 
     }
 
+    public Observable<List<Weather>> readFromBase () {
+        return Observable.from(database.weatherDao().loadAllWeatherObject()).toList();
+    }
+
     public void insertData(List<Weather> weatherList) {
 
-
-//
-//        if (weatherObj instanceof WeatherMountainView) {
-//
-//            WeatherMountainView weatherObject = (WeatherMountainView) weatherObj;
-//
-//            long normalizedUtcStartDay = SunshineDateUtils.getNormalizedUtcDateForToday();
-//
-//            for (int i = 0; i < weatherObject.getList().size(); i++) {
-//
-//                dateTimeMillis = normalizedUtcStartDay + SunshineDateUtils.DAY_IN_MILLIS * i;
-//                String dateString = SunshineDateUtils.getFriendlyDateString(mContext, dateTimeMillis, false);
-//                int weatherId = weatherObject.getList().get(i).getWeatherDetail().get(0).getWeatherId();
-//                String description = SunshineWeatherUtils.getStringForWeatherCondition(mContext, weatherId);
-//
-//                double tempMinInCelsius = weatherObject.getList().get(i).getTemperatureObject().getMinTemperature();
-//
-//                String minTemp = SunshineWeatherUtils.formatTemperature(mContext, tempMinInCelsius);
-//
-//                double tempMaxInCelsius = weatherObject.getList().get(i).getTemperatureObject().getMaxTemperature();
-//
-//                String maxTemp = SunshineWeatherUtils.formatTemperature(mContext, tempMaxInCelsius);
-//
-//                double pressure = weatherObject.getList().get(i).getPressure();
-//                int humidity = weatherObject.getList().get(i).getHumidity();
-//                double windSpeed = weatherObject.getList().get(i).getWindSpeed();
-//                double windDirection = weatherObject.getList().get(i).getWindDirection();
-//
-//                Weather weather = new Weather(dateTimeMillis, weatherId, tempMinInCelsius, tempMaxInCelsius, pressure, humidity, windSpeed, windDirection);
-//                mList.add(weather);
-//                database.weatherDao().insertWeatherObject(weather);
-//
-//            }
-//        } else if (weatherObj instanceof WeatherObject) {
-//
-//               WeatherObject weatherObject = (WeatherObject) weatherObj;
-//
-//            int y = 0;
-//            long normalizedUtcStartDay = SunshineDateUtils.getNormalizedUtcDateForToday();
-//
-//            for (int i = 0; i < weatherObject.getList().size(); i++) {
-//
-//                dateTimeMillis = normalizedUtcStartDay + SunshineDateUtils.DAY_IN_MILLIS * y;
-//                String dateString = SunshineDateUtils.getFriendlyDateString(mContext, dateTimeMillis, false);
-//                int weatherId = weatherObject.getList().get(i).getWeatherDetail().get(0).getWeatherId();
-//                String description = SunshineWeatherUtils.getStringForWeatherCondition(mContext, weatherId);
-//
-//                double tempMinInFahrenheit = weatherObject.getList().get(i).getTemperatureObject().getMinTemperature();
-//                double tempMinInCelsius = tempMinInFahrenheit - 273.15;
-//                String minTemp = SunshineWeatherUtils.formatTemperature(mContext, tempMinInCelsius);
-//
-//                double tempMaxInFahrenheit = weatherObject.getList().get(i).getTemperatureObject().getMaxTemperature();
-//                double tempMaxInCelsius = tempMaxInFahrenheit - 273.15;
-//                String maxTemp = SunshineWeatherUtils.formatTemperature(mContext, tempMaxInCelsius);
-//
-//                double pressure = weatherObject.getList().get(i).getTemperatureObject().getPressure();
-//                int humidity = weatherObject.getList().get(i).getTemperatureObject().getHumidity();
-//                double windSpeed = weatherObject.getList().get(i).getWindInfo().getWindSpeed();
-//                double windDirection = weatherObject.getList().get(i).getWindInfo().getWindDirection();
-//
-//                Weather weather = new Weather(dateTimeMillis, weatherId, tempMinInCelsius, tempMaxInCelsius, pressure, humidity, windSpeed, windDirection);
-//                mList.add(weather);
-//                database.weatherDao().insertWeatherObject(weather);
-//
-//                y++;
-//                i = i + 7;
-//            }
-//        }
-//    }
         for (int i = 0; i < weatherList.size(); i++) {
             database.weatherDao().insertWeatherObject(weatherList.get(i));
         }
