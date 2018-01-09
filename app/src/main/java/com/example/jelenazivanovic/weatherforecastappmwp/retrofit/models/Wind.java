@@ -9,23 +9,23 @@ import com.google.gson.annotations.SerializedName;
 public class Wind {
 
     @SerializedName("speed")
-    private double windSpeed;
+    private float windSpeed;
     @SerializedName("deg")
-    private double windDirection;
+    private float windDirection;
 
-    public double getWindSpeed() {
+    public float getWindSpeed() {
         return windSpeed;
     }
 
-    public void setWindSpeed(double windSpeed) {
+    public void setWindSpeed(float windSpeed) {
         this.windSpeed = windSpeed;
     }
 
-    public double getWindDirection() {
+    public float getWindDirection() {
         return windDirection;
     }
 
-    public void setWindDirection(double windDirection) {
+    public void setWindDirection(float windDirection) {
         this.windDirection = windDirection;
     }
 }

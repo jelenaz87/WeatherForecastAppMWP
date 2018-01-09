@@ -6,7 +6,8 @@ import com.example.jelenazivanovic.weatherforecastappmwp.retrofit.apiservice.Ser
 import com.example.jelenazivanovic.weatherforecastappmwp.retrofitmountaintview.serviceApiMountainView.MountainViewApi;
 
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
@@ -40,7 +41,7 @@ public class ApiServiceClient {
     private static Retrofit getRetrofitForBlegrade() {
         return new Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }
@@ -48,7 +49,7 @@ public class ApiServiceClient {
     private static Retrofit getRetrofitForMountainView() {
         return new Retrofit.Builder()
                 .baseUrl(BASE_URL_MOUNTAIN_VIEW)
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }

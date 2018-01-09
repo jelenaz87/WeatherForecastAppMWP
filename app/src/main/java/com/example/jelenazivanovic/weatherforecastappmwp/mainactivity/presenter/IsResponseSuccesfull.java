@@ -4,7 +4,7 @@ import com.example.jelenazivanovic.weatherforecastappmwp.data.Weather;
 
 import java.util.List;
 
-import rx.Observable;
+import io.reactivex.Observable;
 
 
 /**

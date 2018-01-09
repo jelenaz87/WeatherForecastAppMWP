@@ -22,6 +22,15 @@
 
         <activity android:name=".preferencescreen.view.SettingsActivity"> </activity>
 
+        <activity android:name=".detailactivity.view.DetailActivity"
+            android:label="@string/title_activity_detail"
+            android:parentActivityName=".mainactivity.view.MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".mainactivity.view.MainActivity"/>
+        </activity>
+
     </application>
 
 

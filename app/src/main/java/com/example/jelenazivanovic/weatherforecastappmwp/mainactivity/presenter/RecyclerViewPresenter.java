@@ -17,5 +17,7 @@ public interface RecyclerViewPresenter {
 
     void invokePresenter ();
     void updateWeather (List<Weather> mList);
+    void sendIdOfRow (int id);
+    void getWeatherObject (Weather weather);
 
 }

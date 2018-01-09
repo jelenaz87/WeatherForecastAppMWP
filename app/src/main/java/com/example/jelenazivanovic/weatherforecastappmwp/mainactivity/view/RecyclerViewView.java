@@ -11,5 +11,6 @@ import java.util.List;
 
 public interface RecyclerViewView {
     void lisOfWeather (List<Weather> list);
+    void getWeatherFromOneRow (Weather weather);
 
 }

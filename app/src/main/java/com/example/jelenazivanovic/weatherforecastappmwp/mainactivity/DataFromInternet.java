@@ -2,6 +2,7 @@ package com.example.jelenazivanovic.weatherforecastappmwp.mainactivity;
 
 import android.content.Context;
 
+import com.example.jelenazivanovic.weatherforecastappmwp.R;
 import com.example.jelenazivanovic.weatherforecastappmwp.data.Weather;
 import com.example.jelenazivanovic.weatherforecastappmwp.retrofit.models.WeatherObject;
 import com.example.jelenazivanovic.weatherforecastappmwp.retrofitmountaintview.models.WeatherInfo;
@@ -12,8 +13,13 @@ import com.example.jelenazivanovic.weatherforecastappmwp.utilities.SunshineWeath
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Observable;
-import rx.functions.Func1;
+
+import io.reactivex.Observable;
+
+import io.reactivex.Single;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
+
 
 /**
  * Created by jelena.zivanovic on 12/27/2017.
@@ -39,31 +45,14 @@ public class DataFromInternet {
 
     public Observable<List<Weather>> getDataForBelgrade (final Context mContext) {
         Observable<WeatherObject> objectCall = ApiServiceClient.getResponseFromServiceApiForBelgrade().getWeatherObject();
-//        objectCall.enqueue(new Callback<WeatherObject>() {
-//            @Override
-//            public void onResponse(Call<WeatherObject> call, Response<WeatherObject> response) {
-//              weatherObjectBelgrade = response.body();
-//            //  isResponseSuccesfull.getResponse(weatherObjectBelgrade);
-//            }
-//
-//            @Override
-//            public void onFailure(Call<WeatherObject> call, Throwable t) {
-//                String s = "failure";
-//            }
-//        });
-         return objectCall.map(new Func1<WeatherObject, List<Weather>>() {
-             @Override
-             public List<Weather> call(WeatherObject weatherObject) {
-                 List<Weather> list =Observable.from(getObservableListForBelgrade(weatherObject,mContext).toBlocking().single()).filter(new Func1<Weather, Boolean>() {
-                     @Override
-                     public Boolean call(Weather weather) {
 
-                         return weather != null;
-                     }
-                 }).toList().toBlocking().single();
-                 return list;
+         return objectCall.map(new Function<WeatherObject, List<Weather>>() {
+             @Override
+             public List<Weather> apply(WeatherObject weatherObject) throws Exception {
+              return getObservableListForBelgrade(weatherObject,mContext).blockingGet();
 
              }
+
          });
     }
 
@@ -71,30 +60,16 @@ public class DataFromInternet {
 
         Observable<WeatherMountainView> objectCall = ApiServiceClient.getResponseFromServiceApiForMountainView().getWeather();
 
-//        objectCall.enqueue(new Callback<WeatherMountainView>() {
-//          @Override
-//          public void onResponse(Call<WeatherMountainView> call, Response<WeatherMountainView> response) {
-//              if (response.isSuccessful()) {
-//                  weatherObjectMountainView = response.body();
-//                  isResponseSuccesfull.getResponse(weatherObjectMountainView);
-//              }
-//          }
-//
-//          @Override
-//          public void onFailure(Call<WeatherMountainView> call, Throwable t) {
-//            String s = "failure";
-//          }
-//      });
-
-        return objectCall.map(new Func1<WeatherMountainView,List<Weather>>() {
+        return objectCall.map(new Function<WeatherMountainView, List<Weather>>() {
             @Override
-            public List<Weather> call(WeatherMountainView weatherMountainView) {
-                return getWeatherInfoFromWeathrObject (weatherMountainView,mContext).toBlocking().single();            }
+            public List<Weather> apply(WeatherMountainView weatherMountainView) throws Exception {
+                return getWeatherInfoFromWeathrObject(weatherMountainView, mContext).blockingGet();
+            }
         });
     }
 
     public Observable<List<Weather>> getDataFromInternet (String city, Context context) {
-       if (city.equalsIgnoreCase("Belgrade")) {
+       if (city.equalsIgnoreCase("Belgrade, Serbia")) {
            return getObservableForBelgrade(context);
        } else if (city.equalsIgnoreCase("MountainView")) {
           return getObservableForMountainView(context);
@@ -111,10 +86,10 @@ public class DataFromInternet {
         return getDataForBelgrade(context);
     }
 
-    private Observable<List<Weather>> getWeatherInfoFromWeathrObject (WeatherMountainView weatherMountainView, final Context mContext) {
-        return Observable.from(weatherMountainView.getList()).map(new Func1<WeatherInfo, Weather>() {
+    private Single<List<Weather>> getWeatherInfoFromWeathrObject (WeatherMountainView weatherMountainView, final Context mContext) {
+        return Observable.fromIterable(weatherMountainView.getList()).map(new io.reactivex.functions.Function<WeatherInfo, Weather>() {
             @Override
-            public Weather call(WeatherInfo weatherInfo) {
+            public Weather apply(WeatherInfo weatherInfo) throws Exception {
                 Weather weather = null;
 
                 long normalizedUtcStartDay = SunshineDateUtils.getNormalizedUtcDateForToday();
@@ -131,23 +106,33 @@ public class DataFromInternet {
 
                 String maxTemp = SunshineWeatherUtils.formatTemperature(mContext, tempMaxInCelsius);
 
-                double pressure = weatherInfo.getPressure();
-                int humidity = weatherInfo.getHumidity();
-                double windSpeed = weatherInfo.getWindSpeed();
-                double windDirection = weatherInfo.getWindDirection();
+                float pressure = weatherInfo.getPressure();
+                String pressureString = mContext.getString(R.string.format_pressure, pressure);
 
-                weather = new Weather(dateString, weatherId, minTemp, maxTemp, pressure, humidity, windSpeed, windDirection, description);
+                float humidity = weatherInfo.getHumidity();
+                String humidityString = mContext.getString(R.string.format_humidity, humidity);
+
+                float windSpeed = weatherInfo.getWindSpeed();
+                float windDirection = weatherInfo.getWindDirection();
+                String windString = SunshineWeatherUtils.getFormattedWind(mContext, windSpeed, windDirection);
+
+
+
+                weather = new Weather(i,dateString, weatherId, minTemp, maxTemp, pressureString, humidityString,windString, description);
                 i++;
                 return weather;
             }
         }).toList();
 
-    }
 
-    private Observable<List<Weather>> getObservableListForBelgrade (WeatherObject weatherObject, final Context mContext) {
-        return Observable.from(weatherObject.getList()).map(new Func1<com.example.jelenazivanovic.weatherforecastappmwp.retrofit.models.WeatherInfo, Weather>() {
+        }
+
+
+
+    private Single<List<Weather>> getObservableListForBelgrade (WeatherObject weatherObject, final Context mContext) {
+        return Observable.fromIterable(weatherObject.getList()).map(new Function<com.example.jelenazivanovic.weatherforecastappmwp.retrofit.models.WeatherInfo, Weather>() {
             @Override
-            public Weather call(com.example.jelenazivanovic.weatherforecastappmwp.retrofit.models.WeatherInfo weatherInfo) {
+            public Weather apply(com.example.jelenazivanovic.weatherforecastappmwp.retrofit.models.WeatherInfo weatherInfo) throws Exception {
                 Weather weather = null;
                 long normalizedUtcStartDay = SunshineDateUtils.getNormalizedUtcDateForToday();
                 if (i ==0 || i == 7 || i == 14 || i == 21 || i == 28 || i == 35 ) {
@@ -164,18 +149,30 @@ public class DataFromInternet {
                     double tempMaxInCelsius = tempMaxInFahrenheit - 273.15;
                     String maxTemp = SunshineWeatherUtils.formatTemperature(mContext, tempMaxInCelsius);
 
-                    double pressure = weatherInfo.getTemperatureObject().getPressure();
-                    int humidity = weatherInfo.getTemperatureObject().getHumidity();
-                    double windSpeed = weatherInfo.getWindInfo().getWindSpeed();
-                    double windDirection = weatherInfo.getWindInfo().getWindDirection();
+                    float pressure = weatherInfo.getTemperatureObject().getPressure();
+                    String pressureString = mContext.getString(R.string.format_pressure, pressure);
 
-                    weather = new Weather(dateString, weatherId, minTemp, maxTemp, pressure, humidity, windSpeed, windDirection, description);
+                    float humidity = weatherInfo.getTemperatureObject().getHumidity();
+                    String humidityString = mContext.getString(R.string.format_humidity, humidity);
+
+                    float windSpeed = weatherInfo.getWindInfo().getWindSpeed();
+                    float windDirection = weatherInfo.getWindInfo().getWindDirection();
+                    String windString = SunshineWeatherUtils.getFormattedWind(mContext, windSpeed, windDirection);
+
+                    weather = new Weather(y, dateString, weatherId, minTemp, maxTemp, pressureString, humidityString, windString, description);
 
                     y++;
                 }
                 i++;
                 return weather;
-            } }).toList();
+            }
+        }).filter(new Predicate<Weather>() {
+            @Override
+            public boolean test(Weather weather) throws Exception {
+                return weather!= null;
+            }
+        }).toList();
+
     }
 
 

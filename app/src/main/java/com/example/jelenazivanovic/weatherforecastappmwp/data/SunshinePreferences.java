@@ -70,6 +70,14 @@ public final class SunshinePreferences {
         return sp.getString(keyForLocation, defaultLocation);
     }
 
+    public static String getWeatherLocation(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+
+        String keyForLocation = context.getString(R.string.pref_location_key);
+        String defaultLocation = context.getString(R.string.pref_location_default);
+
+        return sp.getString(keyForLocation, defaultLocation);
+    }
     /**
      * Returns true if the user has selected metric temperature display.
      *

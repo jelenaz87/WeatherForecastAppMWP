@@ -3,10 +3,9 @@ package com.example.jelenazivanovic.weatherforecastappmwp.retrofitmountaintview.
 import com.example.jelenazivanovic.weatherforecastappmwp.retrofitmountaintview.models.WeatherMountainView;
 
 
-
-import retrofit2.Call;
+import io.reactivex.Observable;
 import retrofit2.http.GET;
-import rx.Observable;
+
 
 /**
  * Created by jelena.zivanovic on 12/26/2017.

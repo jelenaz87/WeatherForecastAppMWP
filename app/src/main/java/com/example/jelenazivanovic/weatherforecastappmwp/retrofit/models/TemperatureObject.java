@@ -14,9 +14,9 @@ public class TemperatureObject {
     @SerializedName("temp_min")
     private double minTemperature;
     @SerializedName("pressure")
-    private double pressure;
+    private float pressure;
     @SerializedName("humidity")
-    private int humidity;
+    private float humidity;
 
     public double getMaxTemperature() {
         return maxTemperature;
@@ -33,19 +33,19 @@ public class TemperatureObject {
     public void setMinTemperature(double minTemperature) {
         this.minTemperature = minTemperature;
     }
-    public double getPressure() {
+    public float getPressure() {
         return pressure;
     }
 
-    public void setPressure(double pressure) {
+    public void setPressure(float pressure) {
         this.pressure = pressure;
     }
 
-    public int getHumidity() {
+    public float getHumidity() {
         return humidity;
     }
 
-    public void setHumidity(int humidity) {
+    public void setHumidity(float humidity) {
         this.humidity = humidity;
     }
 

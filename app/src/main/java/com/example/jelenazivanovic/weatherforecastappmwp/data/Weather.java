@@ -5,23 +5,26 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
+import java.io.Serializable;
+
 /**
  * Created by jelena.zivanovic on 12/25/2017.
  */
 @Entity (tableName = "weather", indices = {@Index(value = {"dateTimeMillis"}, unique = true)})
-public class Weather {
+public class Weather implements Serializable {
 
     @PrimaryKey (autoGenerate = true)
     private int id;
 
+    private int id_row;
     private String dateTimeMillis;
     private int weatherId;
     private String minTemperature;
     private String maxTemperature;
-    private double pressure;
-    private int humidity;
-    private double windSpeed;
-    private double windDirection;
+    private String pressure;
+    private String humidity;
+    private String windString;
+
     String description;
 
     @Ignore
@@ -29,16 +32,16 @@ public class Weather {
 
     }
 
-    public Weather (String dateTimeMillis, int weatherId, String minTemperature, String maxTemperature, double pressure, int humidity, double windSpeed, double windDirection,String description) {
+    public Weather (int id ,String dateTimeMillis, int weatherId, String minTemperature, String maxTemperature, String pressure, String humidity, String windString,String description) {
       this.dateTimeMillis = dateTimeMillis;
       this.weatherId = weatherId;
       this.minTemperature = minTemperature;
       this.maxTemperature = maxTemperature;
       this.pressure = pressure;
       this.humidity = humidity;
-      this.windSpeed = windSpeed;
-      this.windDirection = windDirection;
+      this.windString = windString;
       this.description = description;
+      this.id_row = id;
     }
 
     public int getId() {
@@ -81,36 +84,28 @@ public class Weather {
         this.maxTemperature = maxTemperature;
     }
 
-    public double getPressure() {
+    public String getPressure() {
         return pressure;
     }
 
-    public void setPressure(double pressure) {
+    public void setPressure(String pressure) {
         this.pressure = pressure;
     }
 
-    public int getHumidity() {
+    public String getHumidity() {
         return humidity;
     }
 
-    public void setHumidity(int humidity) {
+    public void setHumidity(String humidity) {
         this.humidity = humidity;
     }
 
-    public double getWindSpeed() {
-        return windSpeed;
+    public String getWindString() {
+        return windString;
     }
 
-    public void setWindSpeed(double windSpeed) {
-        this.windSpeed = windSpeed;
-    }
-
-    public double getWindDirection() {
-        return windDirection;
-    }
-
-    public void setWindDirection(double windDirection) {
-        this.windDirection = windDirection;
+    public void setWindString(String windString) {
+        this.windString = windString;
     }
 
     public String getDescription() {
@@ -119,5 +114,13 @@ public class Weather {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getId_row() {
+        return id_row;
+    }
+
+    public void setId_row(int id_row) {
+        this.id_row = id_row;
     }
 }

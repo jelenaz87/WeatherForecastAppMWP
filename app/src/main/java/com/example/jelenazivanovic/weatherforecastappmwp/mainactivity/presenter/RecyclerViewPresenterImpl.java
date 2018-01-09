@@ -47,5 +47,15 @@ public class RecyclerViewPresenterImpl implements RecyclerViewPresenter{
 
     }
 
+    @Override
+    public void sendIdOfRow(int id) {
+        model.sendIdOfRow(id);
+    }
+
+    @Override
+    public void getWeatherObject(Weather weather) {
+       view.getWeatherFromOneRow(weather);
+    }
+
 
 }

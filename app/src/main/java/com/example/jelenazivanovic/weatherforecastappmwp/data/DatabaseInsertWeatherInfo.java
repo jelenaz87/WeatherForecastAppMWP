@@ -7,13 +7,15 @@ import com.example.jelenazivanovic.weatherforecastappmwp.retrofitmountaintview.m
 import com.example.jelenazivanovic.weatherforecastappmwp.utilities.SunshineDateUtils;
 import com.example.jelenazivanovic.weatherforecastappmwp.utilities.SunshineWeatherUtils;
 
+import org.reactivestreams.Subscriber;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Observable;
-import rx.Observer;
-import rx.Subscriber;
-import rx.functions.Func1;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+
 
 /**
  * Created by jelena.zivanovic on 12/26/2017.
@@ -21,11 +23,11 @@ import rx.functions.Func1;
 
 public class DatabaseInsertWeatherInfo {
 
-    public static List<Long> sInitialized;
+    public static List<Long> list_inserted_row;
     private WeatherDatabase database;
     private Context mContext;
-    private ArrayList<Weather> mList;
-    private long dateTimeMillis;
+
+
 
     public DatabaseInsertWeatherInfo() {
 
@@ -34,20 +36,16 @@ public class DatabaseInsertWeatherInfo {
     public DatabaseInsertWeatherInfo(Context mContext) {
         this.mContext = mContext;
         this.database = WeatherDatabase.getWeatherDatabaseInstance(mContext);
-        this.mList = new ArrayList<>();
+
     }
 
     public Observable<Boolean> isFatabaseEmpty () {
 
-      return Observable.create(new Observable.OnSubscribe<Boolean>() {
+      return Observable.create(new ObservableOnSubscribe<Boolean>() {
           @Override
-          public void call(Subscriber<? super Boolean> subscriber) {
-              try {
-                  subscriber.onNext(database.weatherDao().loadAllWeatherObject().isEmpty());
-                  subscriber.onCompleted();     // Signal about the completion subscriber
-              } catch (Exception e) {
-                  subscriber.onError(e);        // Signal about the error to subscriber
-              }
+          public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
+              e.onNext(readFromBase().isEmpty().blockingGet());
+
           }
       });
     }
@@ -59,13 +57,22 @@ public class DatabaseInsertWeatherInfo {
     }
 
     public Observable<List<Weather>> readFromBase () {
-        return Observable.from(database.weatherDao().loadAllWeatherObject()).toList();
+        return Observable.fromArray(database.weatherDao().loadAllWeatherObject());
+    }
+
+    public Observable<Weather> readOneRowFromDatabase (final int id) {
+       return Observable.create(new ObservableOnSubscribe<Weather>() {
+            @Override
+            public void subscribe(ObservableEmitter<Weather> e) throws Exception {
+                e.onNext(WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().loadAEqualThanId(id));
+            }
+        });
     }
 
     public void insertData(List<Weather> weatherList) {
 
         for (int i = 0; i < weatherList.size(); i++) {
-            database.weatherDao().insertWeatherObject(weatherList.get(i));
+           list_inserted_row = database.weatherDao().insertWeatherObject(weatherList.get(i));
         }
     }
 }

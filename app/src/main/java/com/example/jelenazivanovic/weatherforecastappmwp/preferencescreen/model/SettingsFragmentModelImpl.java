@@ -45,28 +45,12 @@ public class SettingsFragmentModelImpl implements SettingsFragmentModel {
     @Override
     public void sendResultOnSharedPreferenceChangeListenerToModel(String key, Context mContext, SharedPreferences preferences) {
         if (key.equals(mContext.getString(R.string.pref_location_key))) {
-//            // we've changed the location
-//            // Wipe out any potential PlacePicker latlng values so that we can use this text entry.
-//            SunshinePreferences.resetLocationCoordinates(activity);
-//           new CheckForEmptyRunnable(activity).startImmediateSync(activity);
+
         } else if (key.equals(mContext.getString(R.string.pref_units_key))) {
-//            // units have changed. update lists of weather entries accordingly
-//            activity.getContentResolver().notifyChange(WeatherContract.WeatherEntry.CONTENT_URI, null);
+
         }
 
         presenter.getResultOnSharedPreferenceChangeListener(preferences, key);
     }
 
-//    @Override
-//    public void sendSharedPreferenceAndKey() {
-     //   if (key.equals(getString(R.string.pref_location_key))) {
-//            // we've changed the location
-//            // Wipe out any potential PlacePicker latlng values so that we can use this text entry.
-//            SunshinePreferences.resetLocationCoordinates(activity);
-//           new CheckForEmptyRunnable(activity).startImmediateSync(activity);
-//        } else if (key.equals(getString(R.string.pref_units_key))) {
-//            // units have changed. update lists of weather entries accordingly
-//            activity.getContentResolver().notifyChange(WeatherContract.WeatherEntry.CONTENT_URI, null);
-//        }
-  //  }
 }

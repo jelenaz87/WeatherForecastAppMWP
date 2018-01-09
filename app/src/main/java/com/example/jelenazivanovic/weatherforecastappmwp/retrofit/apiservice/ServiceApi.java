@@ -2,9 +2,10 @@ package com.example.jelenazivanovic.weatherforecastappmwp.retrofit.apiservice;
 
 import com.example.jelenazivanovic.weatherforecastappmwp.retrofit.models.WeatherObject;
 
+import io.reactivex.Observable;
 import retrofit2.Call;
 import retrofit2.http.GET;
-import rx.Observable;
+
 
 /**
  * Created by jelena.zivanovic on 12/21/2017.

@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.jelenazivanovic.weatherforecastappmwp.R;
+import com.example.jelenazivanovic.weatherforecastappmwp.data.DatabaseInsertWeatherInfo;
 import com.example.jelenazivanovic.weatherforecastappmwp.data.Weather;
 import com.example.jelenazivanovic.weatherforecastappmwp.utilities.SunshineDateUtils;
 import com.example.jelenazivanovic.weatherforecastappmwp.utilities.SunshineWeatherUtils;
@@ -27,6 +28,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 
     /* The context we use to utility methods, app resources and layout inflaters */
     private final Context mContext;
+    private DatabaseInsertWeatherInfo weatherInfo;
 
     /*
      * Below, we've defined an interface to handle clicks on items within this Adapter. In the
@@ -40,7 +42,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
      * The interface that receives onClick messages.
      */
     public interface ForecastAdapterOnClickHandler {
-        void onClick(long date);
+        void onClick(int date);
     }
 
     /*
@@ -67,6 +69,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         mClickHandler = clickHandler;
         orient = mContext.getResources().getConfiguration().orientation;
         //       mUseTodayLayout = mContext.getResources().getBoolean(R.bool.use_today_layout);
+
     }
 
     /**
@@ -228,13 +231,14 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 
     @Override
     public void onClick(View v) {
+        int adapterPosition = getAdapterPosition();
+        mClickHandler.onClick(adapterPosition);
 
     }
 
 }
     public void swapCursor(List<Weather> list) {
         this.list = list;
-
         notifyDataSetChanged();
     }
 
