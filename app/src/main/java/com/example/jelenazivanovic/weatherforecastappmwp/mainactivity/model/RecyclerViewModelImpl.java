@@ -68,8 +68,8 @@ public class RecyclerViewModelImpl  implements RecyclerViewModel {
               //      isInserted = false;
                     return data.getDataFromInternet(SunshinePreferences.getWeatherLocation(mContext), mContext).subscribeOn(Schedulers.io());
                 }
-           //     isInserted = true;
-                return weatherInfo.readFromBase();
+                isInserted = true;
+                return data.getDataFromInternet(SunshinePreferences.getWeatherLocation(mContext),mContext).subscribeOn(Schedulers.io());
             }
 
         }).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Weather>>() {

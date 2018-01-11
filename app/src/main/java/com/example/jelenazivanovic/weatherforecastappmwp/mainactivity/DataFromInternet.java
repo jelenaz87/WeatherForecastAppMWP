@@ -31,12 +31,13 @@ public class DataFromInternet {
    private WeatherObject weatherObjectBelgrade;
    private WeatherMountainView  weatherObjectMountainView;
     private List weatherList;
-    private int i = 0;
-    private int y = 0;
+    private int i ;
+    private int y ;
 
 
     public DataFromInternet () {
-
+        this.i = 0;
+        this.y = 0;
         this.weatherObjectBelgrade = null;
         this.weatherObjectMountainView = null;
         this.weatherList = new ArrayList();
@@ -69,7 +70,7 @@ public class DataFromInternet {
     }
 
     public Observable<List<Weather>> getDataFromInternet (String city, Context context) {
-       if (city.equalsIgnoreCase("Belgrade, Serbia")) {
+       if (city.equalsIgnoreCase("Belgrade")) {
            return getObservableForBelgrade(context);
        } else if (city.equalsIgnoreCase("MountainView")) {
           return getObservableForMountainView(context);
@@ -117,7 +118,7 @@ public class DataFromInternet {
                 String windString = SunshineWeatherUtils.getFormattedWind(mContext, windSpeed, windDirection);
 
 
-
+                String s = ""+i;
                 weather = new Weather(i,dateString, weatherId, minTemp, maxTemp, pressureString, humidityString,windString, description);
                 i++;
                 return weather;
@@ -130,6 +131,9 @@ public class DataFromInternet {
 
 
     private Single<List<Weather>> getObservableListForBelgrade (WeatherObject weatherObject, final Context mContext) {
+
+
+
         return Observable.fromIterable(weatherObject.getList()).map(new Function<com.example.jelenazivanovic.weatherforecastappmwp.retrofit.models.WeatherInfo, Weather>() {
             @Override
             public Weather apply(com.example.jelenazivanovic.weatherforecastappmwp.retrofit.models.WeatherInfo weatherInfo) throws Exception {
@@ -162,6 +166,8 @@ public class DataFromInternet {
                     weather = new Weather(y, dateString, weatherId, minTemp, maxTemp, pressureString, humidityString, windString, description);
 
                     y++;
+                } else {
+                    weather = new Weather();
                 }
                 i++;
                 return weather;
@@ -169,7 +175,7 @@ public class DataFromInternet {
         }).filter(new Predicate<Weather>() {
             @Override
             public boolean test(Weather weather) throws Exception {
-                return weather!= null;
+                return weather.isEmptyWeather(weather);
             }
         }).toList();
 

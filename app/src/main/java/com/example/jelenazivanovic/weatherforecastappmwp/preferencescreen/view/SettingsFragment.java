@@ -18,10 +18,13 @@ package com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.view;
 import android.app.Activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
 
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.ListPreference;
 
@@ -29,17 +32,28 @@ import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceScreen;
 
+import com.example.jelenazivanovic.weatherforecastappmwp.ListAdapterAsyncTaskLoader;
 import com.example.jelenazivanovic.weatherforecastappmwp.R;
 
 
+import com.example.jelenazivanovic.weatherforecastappmwp.data.SunshinePreferences;
+import com.example.jelenazivanovic.weatherforecastappmwp.data.Weather;
+import com.example.jelenazivanovic.weatherforecastappmwp.data.WeatherDatabase;
+import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.DataFromInternet;
 import com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.di.DaggerSettingsFragmentComponent;
 import com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.di.SettingsFragmentModule;
 import com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.presenter.SettingsFragmentPresenter;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
+
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 
 /**
@@ -64,6 +78,13 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
     }
 
     private void setPreferenceSummary(Preference preference, Object value) {
+
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        });
         String stringValue = value.toString();
 
         if (preference instanceof ListPreference) {
@@ -98,6 +119,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
         presenter.provideToPresenter(sharedPreferences, preferenceArrayList);
 
 
+
+
+
     }
 
     @Override
@@ -120,21 +144,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
         DaggerSettingsFragmentComponent.builder().settingsFragmentModule(new SettingsFragmentModule(this)).build().inject(this);
-        Context mContext = getActivity().getBaseContext();
+        final Context mContext = getActivity().getBaseContext();
         presenter.sendKey(key, mContext, sharedPreferences);
 
-
-        if (key.equals(getString(R.string.pref_location_key))) {
-
-        } else if (key.equals(getString(R.string.pref_units_key))) {
-
-        }
-        Preference preference = findPreference(key);
-        if (null != preference) {
-            if (!(preference instanceof CheckBoxPreference)) {
-                setPreferenceSummary(preference, sharedPreferences.getString(key, ""));
-            }
-        }
     }
 
 

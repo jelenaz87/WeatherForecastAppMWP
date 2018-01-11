@@ -1,5 +1,6 @@
 package com.example.jelenazivanovic.weatherforecastappmwp.data;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -29,6 +30,8 @@ public interface WeatherDao {
     @Delete
     void deleteWeather(Weather... weathers);
 
+    @Query("SELECT * FROM weather")
+    LiveData<List<Weather>> loadAllLoadData();
 
 
 }

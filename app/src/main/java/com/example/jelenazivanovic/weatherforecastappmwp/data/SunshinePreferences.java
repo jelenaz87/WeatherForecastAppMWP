@@ -74,7 +74,7 @@ public final class SunshinePreferences {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
 
         String keyForLocation = context.getString(R.string.pref_location_key);
-        String defaultLocation = context.getString(R.string.pref_location_default);
+        String defaultLocation = "Belgrade";
 
         return sp.getString(keyForLocation, defaultLocation);
     }

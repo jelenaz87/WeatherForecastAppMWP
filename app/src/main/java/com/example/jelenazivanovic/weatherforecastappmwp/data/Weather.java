@@ -123,4 +123,12 @@ public class Weather implements Serializable {
     public void setId_row(int id_row) {
         this.id_row = id_row;
     }
+
+    public boolean isEmptyWeather (Weather weather) {
+        if (weather.description == null) {
+            return false;
+        }
+        return true;
+
+    }
 }

@@ -205,4 +205,5 @@
         High:<xliff:g id="high">%2$s</xliff:g>
         Low:<xliff:g id="low">%3$s</xliff:g>
     </string>
+    <string name="title_activity_maps">Map</string>
 </resources>

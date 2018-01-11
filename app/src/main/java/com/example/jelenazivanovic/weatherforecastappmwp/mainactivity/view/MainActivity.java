@@ -1,7 +1,9 @@
 package com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.view;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -11,12 +13,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.jelenazivanovic.weatherforecastappmwp.ListAdapterAsyncTaskLoader;
 import com.example.jelenazivanovic.weatherforecastappmwp.R;
+import com.example.jelenazivanovic.weatherforecastappmwp.RecyclerViewModel;
+import com.example.jelenazivanovic.weatherforecastappmwp.data.SunshinePreferences;
 import com.example.jelenazivanovic.weatherforecastappmwp.data.Weather;
 
+import com.example.jelenazivanovic.weatherforecastappmwp.data.WeatherDatabase;
 import com.example.jelenazivanovic.weatherforecastappmwp.detailactivity.view.DetailActivity;
+import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.DataFromInternet;
 import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.di.DaggerRecyclerViewComponent;
 import com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.view.SettingsActivity;
 
@@ -31,27 +38,15 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class MainActivity extends AppCompatActivity implements ForecastAdapter.ForecastAdapterOnClickHandler, RecyclerViewView, LoaderManager.LoaderCallbacks<List<Weather>> {
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
+public class MainActivity extends AppCompatActivity implements ForecastAdapter.ForecastAdapterOnClickHandler, RecyclerViewView {
     private RecyclerView mRecyclerView;
     private ForecastAdapter mAdapter;
 
-    private LoaderManager.LoaderCallbacks<List<Weather>> mLoader = new LoaderManager.LoaderCallbacks<List<Weather>>() {
-        @Override
-        public Loader<List<Weather>> onCreateLoader(int id, Bundle args) {
-            return new ListAdapterAsyncTaskLoader(MainActivity.this);
-        }
-
-        @Override
-        public void onLoadFinished(Loader<List<Weather>> loader, List<Weather> data) {
-           mAdapter.swapCursor(data);
-        }
-
-        @Override
-        public void onLoaderReset(Loader<List<Weather>> loader) {
-
-        }
-    };
+    private RecyclerViewModel model;
 
     @Inject
     RecyclerViewPresenter presenter;
@@ -71,10 +66,29 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
         mAdapter = new ForecastAdapter(this, this);
         presenter.invokePresenter();
 
-        getSupportLoaderManager().initLoader(0, null, mLoader);
+        model = ViewModelProviders.of(this).get(RecyclerViewModel.class);
+        mRecyclerView.setVisibility(View.INVISIBLE);
+
+        model.getItemAndPersonList().observe(MainActivity.this, new android.arch.lifecycle.Observer<List<Weather>>() {
+            @Override
+            public void onChanged(@Nullable List<Weather> weatherList) {
+                mAdapter.swapCursor(weatherList);
+                mRecyclerView.setVisibility(View.VISIBLE);
+            }
+        });
+
+
+
+
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
 
+
+      //  getSupportLoaderManager().restartLoader(22, null, this);
+    }
 
     @Override
     public void onClick(int id) {
@@ -110,27 +124,23 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
-            startActivity(new Intent(this, SettingsActivity.class));
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivityForResult(intent,2);
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
-    public Loader<List<Weather>> onCreateLoader(int id, Bundle args) {
-        return null;
-    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-    @Override
-    public void onLoadFinished(Loader<List<Weather>> loader, List<Weather> data) {
+        if (requestCode == 1) {
 
-    }
-
-    @Override
-    public void onLoaderReset(Loader<List<Weather>> loader) {
+            if (resultCode == RESULT_OK) {
+              Intent i = data;
+            }
+        }
 
     }
-
-
 }
