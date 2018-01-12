@@ -57,5 +57,15 @@ public class RecyclerViewPresenterImpl implements RecyclerViewPresenter{
        view.getWeatherFromOneRow(weather);
     }
 
+    @Override
+    public void checkStateOfDatabase() {
+        model.getStateOfdatabase();
+    }
+
+    @Override
+    public void updateUi(List<Weather> mList) {
+        view.updateUi(mList);
+    }
+
 
 }

@@ -16,6 +16,7 @@ import org.reactivestreams.Subscription;
 
 import java.util.List;
 
+import io.reactivex.FlowableSubscriber;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -92,6 +93,34 @@ public class RecyclerViewModelImpl  implements RecyclerViewModel {
                presenter.getWeatherObject(weather);
            }
        });
+
+    }
+
+    @Override
+    public void getStateOfdatabase() {
+
+        DatabaseInsertWeatherInfo data = new DatabaseInsertWeatherInfo(mContext);
+        data.getDataIfChangesExistInDatabase().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new FlowableSubscriber<List<Weather>>() {
+            @Override
+            public void onSubscribe(Subscription s) {
+
+            }
+
+            @Override
+            public void onNext(List<Weather> weatherList) {
+                presenter.updateUi(weatherList);
+            }
+
+            @Override
+            public void onError(Throwable t) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
 
     }
 

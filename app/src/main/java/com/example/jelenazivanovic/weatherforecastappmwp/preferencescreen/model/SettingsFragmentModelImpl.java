@@ -36,11 +36,12 @@ public class SettingsFragmentModelImpl implements SettingsFragmentModel {
 
 
     private SettingsFragmentPresenter presenter;
-
+    private boolean isLocationChanged;
 
 
     public SettingsFragmentModelImpl(SettingsFragmentPresenter presenter) {
         this.presenter = presenter;
+        this.isLocationChanged = false;
 
     }
 
@@ -62,39 +63,56 @@ public class SettingsFragmentModelImpl implements SettingsFragmentModel {
 
     @Override
     public void sendResultOnSharedPreferenceChangeListenerToModel(final String key, final Context mContext, final SharedPreferences preferences) {
+
+
+
         if (key.equals(mContext.getString(R.string.pref_location_key))) {
 
-            DataFromInternet data = new DataFromInternet();
-           data.getDataFromInternet(SunshinePreferences.getWeatherLocation(mContext), mContext).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Observer<List<Weather>>() {
-                @Override
-                public void onSubscribe(Disposable d) {
+            Weather weather = WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().isTableHasResultForCity(preferences.getString(key, "Belgrade"));
 
-                }
+            if (weather == null) {
 
-                @Override
-                public void onNext(List<Weather> weatherList) {
-                    for (int i = 0; i < weatherList.size(); i++) {
-                        WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().insertWeatherObject(weatherList.get(i));
+                DataFromInternet data = new DataFromInternet();
+                data.getDataFromInternet(preferences.getString(key, "Belgrade"), mContext).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Observer<List<Weather>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
                     }
-                }
 
-                @Override
-                public void onError(Throwable e) {
-                  String s = "error";
-                }
+                    @Override
+                    public void onNext(List<Weather> weatherList) {
+                        for (int i = 0; i < weatherList.size(); i++) {
+                            WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().insertWeatherObject(weatherList.get(i));
+                        }
+                    }
 
-                @Override
-                public void onComplete() {
-                    presenter.getResultOnSharedPreferenceChangeListener(preferences, key);
-                }
-            });
+                    @Override
+                    public void onError(Throwable e) {
+                        String s = "error";
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        presenter.getResultOnSharedPreferenceChangeListener(preferences, key);
+                    }
+                });
+
+            } else {
+               Weather w = WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().getValueForChangeState(true);
+               isLocationChanged = !w.isChangedLocation();
+                Weather weatherUpdate = new Weather();
+                weatherUpdate.setChangedLocation(isLocationChanged);
+                WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().update(weatherUpdate);
+
+                presenter.getResultOnSharedPreferenceChangeListener(preferences, key);
+            }
 
 
-        } else if (key.equals(mContext.getString(R.string.pref_units_key))) {
+
+            } else if (key.equals(mContext.getString(R.string.pref_units_key))) {
+
             presenter.getResultOnSharedPreferenceChangeListener(preferences, key);
+            }
         }
-
-
     }
 
-}

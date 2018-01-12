@@ -7,6 +7,7 @@ package com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.model;
 public interface RecyclerViewModel {
     void getWeatherResults ();
     void sendIdOfRow (int id);
+    void getStateOfdatabase ();
 
 
 }

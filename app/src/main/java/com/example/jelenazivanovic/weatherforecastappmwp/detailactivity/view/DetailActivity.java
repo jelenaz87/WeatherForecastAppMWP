@@ -29,7 +29,8 @@ import android.widget.TextView;
 
 import com.example.jelenazivanovic.weatherforecastappmwp.R;
 import com.example.jelenazivanovic.weatherforecastappmwp.data.Weather;
-import com.example.jelenazivanovic.weatherforecastappmwp.data.WeatherDatabase;
+
+
 import com.example.jelenazivanovic.weatherforecastappmwp.databinding.ActivityDetailBinding;
 import com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.view.SettingsActivity;
 import com.example.jelenazivanovic.weatherforecastappmwp.utilities.SunshineWeatherUtils;
@@ -172,38 +173,38 @@ public class DetailActivity extends AppCompatActivity {
 
     private void setData (Weather weather) {
 
-        mDetailBinding.primaryInfo.date.setText(weather.getDateTimeMillis());
+        mDetailBinding.primaryInfo.date.setText(weather.getCityObject().getDateTimeMillis());
 
-        int weatherId = weather.getWeatherId();
+        int weatherId = weather.getCityObject().getWeatherId();
         int weatherImageId = SunshineWeatherUtils.getLargeArtResourceIdForWeatherCondition(weatherId);
         mDetailBinding.primaryInfo.weatherIcon.setImageResource(weatherImageId);
 
-        mDetailBinding.primaryInfo.weatherDescription.setText(weather.getDescription());
-        String allyDescription = getString(R.string.a11y_forecast,weather.getDescription());
+        mDetailBinding.primaryInfo.weatherDescription.setText(weather.getCityObject().getDescription());
+        String allyDescription = getString(R.string.a11y_forecast,weather.getCityObject().getDescription());
         mDetailBinding.primaryInfo.weatherDescription.setContentDescription(allyDescription);
 
-        mDetailBinding.primaryInfo.lowTemperature.setText(weather.getMinTemperature());
-        String allyLowTemperature = getString(R.string.a11y_low_temp,weather.getMinTemperature());
+        mDetailBinding.primaryInfo.lowTemperature.setText(weather.getCityObject().getMinTemperature());
+        String allyLowTemperature = getString(R.string.a11y_low_temp,weather.getCityObject().getMinTemperature());
         mDetailBinding.primaryInfo.lowTemperature.setContentDescription(allyLowTemperature);
 
-        mDetailBinding.primaryInfo.highTemperature.setText(weather.getMaxTemperature());
-        String allyHighTemperature = getString(R.string.a11y_high_temp,weather.getMaxTemperature());
+        mDetailBinding.primaryInfo.highTemperature.setText(weather.getCityObject().getMaxTemperature());
+        String allyHighTemperature = getString(R.string.a11y_high_temp,weather.getCityObject().getMaxTemperature());
         mDetailBinding.primaryInfo.highTemperature.setContentDescription(allyHighTemperature);
 
-        mDetailBinding.extraWeather.humidityValue.setText(weather.getHumidity());
-        String allyHumidity = getString(R.string.a11y_humidity,weather.getHumidity());
+        mDetailBinding.extraWeather.humidityValue.setText(weather.getCityObject().getHumidity());
+        String allyHumidity = getString(R.string.a11y_humidity,weather.getCityObject().getHumidity());
         mDetailBinding.extraWeather.humidityValue.setContentDescription(allyHumidity);
 
-        mDetailBinding.extraWeather.pressureValue.setText(weather.getPressure());
-        String allyPressure = getString(R.string.a11y_pressure,weather.getPressure());
+        mDetailBinding.extraWeather.pressureValue.setText(weather.getCityObject().getPressure());
+        String allyPressure = getString(R.string.a11y_pressure,weather.getCityObject().getPressure());
         mDetailBinding.extraWeather.pressureValue.setContentDescription(allyPressure);
 
-        mDetailBinding.extraWeather.windValue.setText(weather.getWindString());
-        String allyWind = getString(R.string.a11y_wind,weather.getWindString());
+        mDetailBinding.extraWeather.windValue.setText(weather.getCityObject().getWindString());
+        String allyWind = getString(R.string.a11y_wind,weather.getCityObject().getWindString());
         mDetailBinding.extraWeather.windValue.setContentDescription(allyWind);
 
         mForecastSummary = String.format("%s - %s - %s/%s",
-                weather.getDateTimeMillis(), weather.getDescription(), weather.getMaxTemperature(), weather.getMinTemperature());
+                weather.getCityObject().getDateTimeMillis(), weather.getCityObject().getDescription(), weather.getCityObject().getMaxTemperature(), weather.getCityObject().getMinTemperature());
 
 
     }

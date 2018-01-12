@@ -36,10 +36,6 @@ import com.example.jelenazivanovic.weatherforecastappmwp.ListAdapterAsyncTaskLoa
 import com.example.jelenazivanovic.weatherforecastappmwp.R;
 
 
-import com.example.jelenazivanovic.weatherforecastappmwp.data.SunshinePreferences;
-import com.example.jelenazivanovic.weatherforecastappmwp.data.Weather;
-import com.example.jelenazivanovic.weatherforecastappmwp.data.WeatherDatabase;
-import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.DataFromInternet;
 import com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.di.DaggerSettingsFragmentComponent;
 import com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.di.SettingsFragmentModule;
 import com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.presenter.SettingsFragmentPresenter;

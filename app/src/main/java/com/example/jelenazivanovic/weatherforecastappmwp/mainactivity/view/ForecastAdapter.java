@@ -123,18 +123,18 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
     public void onBindViewHolder(ForecastAdapterViewHolder forecastAdapterViewHolder, int position) {
 
 
-            forecastAdapterViewHolder.dateView.setText( list.get(position).getDateTimeMillis());
+            forecastAdapterViewHolder.dateView.setText( list.get(position).getCityObject().getDateTimeMillis());
 
 
-            forecastAdapterViewHolder.descriptionView.setText(list.get(position).getDescription());
+            forecastAdapterViewHolder.descriptionView.setText(list.get(position).getCityObject().getDescription());
 
-            forecastAdapterViewHolder.lowTempView.setText(list.get(position).getMinTemperature());
+            forecastAdapterViewHolder.lowTempView.setText(list.get(position).getCityObject().getMinTemperature());
 
-            forecastAdapterViewHolder.highTempView.setText(list.get(position).getMaxTemperature());
+            forecastAdapterViewHolder.highTempView.setText(list.get(position).getCityObject().getMaxTemperature());
 
             int viewType = getItemViewType(position);
             int weatherImageId;
-            int weatherId = list.get(position).getWeatherId();
+            int weatherId = list.get(position).getCityObject().getWeatherId();
 
            switch (viewType) {
 

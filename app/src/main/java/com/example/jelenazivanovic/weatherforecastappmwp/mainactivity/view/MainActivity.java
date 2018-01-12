@@ -15,15 +15,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.example.jelenazivanovic.weatherforecastappmwp.ListAdapterAsyncTaskLoader;
+
 import com.example.jelenazivanovic.weatherforecastappmwp.R;
 import com.example.jelenazivanovic.weatherforecastappmwp.RecyclerViewModel;
-import com.example.jelenazivanovic.weatherforecastappmwp.data.SunshinePreferences;
+
 import com.example.jelenazivanovic.weatherforecastappmwp.data.Weather;
 
-import com.example.jelenazivanovic.weatherforecastappmwp.data.WeatherDatabase;
+
 import com.example.jelenazivanovic.weatherforecastappmwp.detailactivity.view.DetailActivity;
-import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.DataFromInternet;
+
 import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.di.DaggerRecyclerViewComponent;
 import com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.view.SettingsActivity;
 
@@ -33,14 +33,11 @@ import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.di.Recycle
 import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.presenter.RecyclerViewPresenter;
 
 
-import java.io.Serializable;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
+
 
 public class MainActivity extends AppCompatActivity implements ForecastAdapter.ForecastAdapterOnClickHandler, RecyclerViewView {
     private RecyclerView mRecyclerView;
@@ -66,16 +63,16 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
         mAdapter = new ForecastAdapter(this, this);
         presenter.invokePresenter();
 
-        model = ViewModelProviders.of(this).get(RecyclerViewModel.class);
+       // model = ViewModelProviders.of(this).get(RecyclerViewModel.class);
         mRecyclerView.setVisibility(View.INVISIBLE);
 
-        model.getItemAndPersonList().observe(MainActivity.this, new android.arch.lifecycle.Observer<List<Weather>>() {
-            @Override
-            public void onChanged(@Nullable List<Weather> weatherList) {
-                mAdapter.swapCursor(weatherList);
-                mRecyclerView.setVisibility(View.VISIBLE);
-            }
-        });
+//        model.getItemAndPersonList().observe(MainActivity.this, new android.arch.lifecycle.Observer<List<Weather>>() {
+//            @Override
+//            public void onChanged(@Nullable List<Weather> weatherList) {
+//                mAdapter.swapCursor(weatherList);
+//                mRecyclerView.setVisibility(View.VISIBLE);
+//            }
+//        });
 
 
 
@@ -83,11 +80,9 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-
-
-      //  getSupportLoaderManager().restartLoader(22, null, this);
+    protected void onResume() {
+        super.onResume();
+        presenter.checkStateOfDatabase();
     }
 
     @Override
@@ -107,6 +102,11 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
         Intent weatherDetailIntent = new Intent(MainActivity.this, DetailActivity.class);
         weatherDetailIntent.putExtra("weather", weather);
         startActivity(weatherDetailIntent);
+    }
+
+    @Override
+    public void updateUi(List<Weather> mlist) {
+        mAdapter.swapCursor(mlist);
     }
 
     @Override
@@ -131,16 +131,6 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 1) {
 
-            if (resultCode == RESULT_OK) {
-              Intent i = data;
-            }
-        }
-
-    }
 }

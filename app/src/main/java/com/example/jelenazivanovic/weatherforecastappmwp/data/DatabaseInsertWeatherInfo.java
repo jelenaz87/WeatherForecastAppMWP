@@ -12,6 +12,7 @@ import org.reactivestreams.Subscriber;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -64,7 +65,7 @@ public class DatabaseInsertWeatherInfo {
        return Observable.create(new ObservableOnSubscribe<Weather>() {
             @Override
             public void subscribe(ObservableEmitter<Weather> e) throws Exception {
-                e.onNext(WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().loadAEqualThanId(id));
+                e.onNext(WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().loadAEqualWithAnId(id));
             }
         });
     }
@@ -74,6 +75,10 @@ public class DatabaseInsertWeatherInfo {
         for (int i = 0; i < weatherList.size(); i++) {
            list_inserted_row = database.weatherDao().insertWeatherObject(weatherList.get(i));
         }
+    }
+
+    public Flowable<List<Weather>> getDataIfChangesExistInDatabase () {
+        return WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().getFlowableListOfObject();
     }
 }
 

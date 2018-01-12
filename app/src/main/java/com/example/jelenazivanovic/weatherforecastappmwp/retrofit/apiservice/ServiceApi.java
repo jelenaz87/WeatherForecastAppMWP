@@ -5,6 +5,7 @@ import com.example.jelenazivanovic.weatherforecastappmwp.retrofit.models.Weather
 import io.reactivex.Observable;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Query;
 
 
 /**
@@ -14,8 +15,11 @@ import retrofit2.http.GET;
 public interface ServiceApi {
 
 
-    @GET("forecast?id=792680&appid=88679d8457078f98d550b4e24ac9ac26")
-    Observable<WeatherObject> getWeatherObject();
+
+    @GET ("forecast")
+    Observable<WeatherObject> getWeatherObject(@Query("q") String city, @Query("appid") String apiKey );
+
+
 
 
 
