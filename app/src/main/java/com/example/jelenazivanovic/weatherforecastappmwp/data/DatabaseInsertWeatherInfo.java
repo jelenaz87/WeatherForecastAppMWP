@@ -1,6 +1,8 @@
 package com.example.jelenazivanovic.weatherforecastappmwp.data;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.example.jelenazivanovic.weatherforecastappmwp.retrofit.models.WeatherObject;
 import com.example.jelenazivanovic.weatherforecastappmwp.retrofitmountaintview.models.WeatherMountainView;
@@ -77,8 +79,14 @@ public class DatabaseInsertWeatherInfo {
         }
     }
 
-    public Flowable<List<Weather>> getDataIfChangesExistInDatabase () {
-        return WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().getFlowableListOfObject();
+//    public Flowable<List<Weather>> getDataIfChangesExistInDatabase () {
+//        return WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().getFlowableListOfObject();
+//    }
+
+    public Observable<List<Weather>> updateUI () {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String location = preferences.getString("location","");
+        return Observable.fromArray(database.weatherDao().isTableHasResultForCity(location));
     }
 }
 

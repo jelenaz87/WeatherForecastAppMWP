@@ -5,9 +5,9 @@ package com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.model;
  */
 
 public interface RecyclerViewModel {
-    void getWeatherResults ();
+    void getWeatherResults (String city);
     void sendIdOfRow (int id);
-    void getStateOfdatabase ();
+   // void getStateOfdatabase ();
 
 
 }

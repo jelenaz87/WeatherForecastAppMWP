@@ -16,6 +16,7 @@ import org.reactivestreams.Subscription;
 
 import java.util.List;
 
+import io.reactivex.Flowable;
 import io.reactivex.FlowableSubscriber;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -60,28 +61,37 @@ public class RecyclerViewModelImpl  implements RecyclerViewModel {
     }
 
     @Override
-    public void getWeatherResults() {
+    public void getWeatherResults(String city) {
 
-        weatherInfo.isFatabaseEmpty().flatMap(new Function<Boolean, Observable<List<Weather>>>() {
-            @Override
-            public Observable<List<Weather>> apply(Boolean aBoolean) throws Exception {
-                if (!aBoolean) {
-              //      isInserted = false;
-                    return data.getDataFromInternet(SunshinePreferences.getWeatherLocation(mContext), mContext).subscribeOn(Schedulers.io());
-                }
-                isInserted = true;
-                return data.getDataFromInternet(SunshinePreferences.getWeatherLocation(mContext),mContext).subscribeOn(Schedulers.io());
-            }
+//        weatherInfo.isFatabaseEmpty().flatMap(new Function<Boolean, Observable<List<Weather>>>() {
+//            @Override
+//            public Observable<List<Weather>> apply(Boolean aBoolean) throws Exception {
+//                if (!aBoolean) {
+//              //      isInserted = false;
+//                    return data.getDataFromInternet(SunshinePreferences.getWeatherLocation(mContext), mContext).subscribeOn(Schedulers.io());
+//                }
+//                isInserted = true;
+//                return data.getDataFromInternet(SunshinePreferences.getWeatherLocation(mContext),mContext).subscribeOn(Schedulers.io());
+//            }
+//
+//        }).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Weather>>() {
+//            @Override
+//            public void accept(List<Weather> weatherList) throws Exception {
+//            //    if (!isInserted) {
+//                weatherInfo.insertData(weatherList);
+// //}
+//                presenter.updateWeather(weatherList);
+//            }
+//            } );
 
-        }).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Weather>>() {
-            @Override
-            public void accept(List<Weather> weatherList) throws Exception {
-            //    if (!isInserted) {
-                    weatherInfo.insertData(weatherList);
- //}
-                presenter.updateWeather(weatherList);
-            }
-            } );
+
+//         WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().getFlowableListOfObject().subscribe(new Consumer<List<Weather>>() {
+//            @Override
+//            public void accept(List<Weather> weatherList) throws Exception {
+//                presenter.updateWeather(weatherList);
+//            }
+//        });
+
                 
     }
 
@@ -96,33 +106,33 @@ public class RecyclerViewModelImpl  implements RecyclerViewModel {
 
     }
 
-    @Override
-    public void getStateOfdatabase() {
-
-        DatabaseInsertWeatherInfo data = new DatabaseInsertWeatherInfo(mContext);
-        data.getDataIfChangesExistInDatabase().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new FlowableSubscriber<List<Weather>>() {
-            @Override
-            public void onSubscribe(Subscription s) {
-
-            }
-
-            @Override
-            public void onNext(List<Weather> weatherList) {
-                presenter.updateUi(weatherList);
-            }
-
-            @Override
-            public void onError(Throwable t) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
-
-    }
+//    @Override
+//    public void getStateOfdatabase() {
+//
+//        DatabaseInsertWeatherInfo data = new DatabaseInsertWeatherInfo(mContext);
+//        data.getDataIfChangesExistInDatabase().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new FlowableSubscriber<List<Weather>>() {
+//            @Override
+//            public void onSubscribe(Subscription s) {
+//
+//            }
+//
+//            @Override
+//            public void onNext(List<Weather> weatherList) {
+//                presenter.updateUi(weatherList);
+//            }
+//
+//            @Override
+//            public void onError(Throwable t) {
+//
+//            }
+//
+//            @Override
+//            public void onComplete() {
+//
+//            }
+//        });
+//
+//    }
 
 
 //            @Override

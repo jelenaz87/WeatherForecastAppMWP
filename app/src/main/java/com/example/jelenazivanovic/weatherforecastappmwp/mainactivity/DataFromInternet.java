@@ -1,6 +1,7 @@
 package com.example.jelenazivanovic.weatherforecastappmwp.mainactivity;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.telecom.Call;
 
 import com.example.jelenazivanovic.weatherforecastappmwp.R;
@@ -142,7 +143,8 @@ public class DataFromInternet {
             @Override
             public Weather apply(com.example.jelenazivanovic.weatherforecastappmwp.retrofit.models.WeatherInfo weatherInfo) throws Exception {
                 Weather weather = new Weather();
-                weather.setCityName("Belgrade");
+                String location = SunshinePreferences.getWeatherLocation(mContext);
+                weather.setCityName(location);
                 CityWeatherData data = null;
                 long normalizedUtcStartDay = SunshineDateUtils.getNormalizedUtcDateForToday();
                 if (i ==0 || i == 8 || i == 16 || i == 24 || i == 32 ) {

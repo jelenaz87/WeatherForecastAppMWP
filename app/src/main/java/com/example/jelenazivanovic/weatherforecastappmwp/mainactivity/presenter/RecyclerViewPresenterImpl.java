@@ -34,8 +34,8 @@ public class RecyclerViewPresenterImpl implements RecyclerViewPresenter{
     }
 
     @Override
-    public void invokePresenter() {
-        model.getWeatherResults();
+    public void invokePresenter(String city) {
+        model.getWeatherResults(city);
 
     }
 
@@ -57,15 +57,15 @@ public class RecyclerViewPresenterImpl implements RecyclerViewPresenter{
        view.getWeatherFromOneRow(weather);
     }
 
-    @Override
-    public void checkStateOfDatabase() {
-        model.getStateOfdatabase();
-    }
+//    @Override
+//    public void checkStateOfDatabase() {
+//        model.getStateOfdatabase();
+//    }
 
-    @Override
-    public void updateUi(List<Weather> mList) {
-        view.updateUi(mList);
-    }
+//    @Override
+//    public void updateUi(List<Weather> mList) {
+//        view.updateUi(mList);
+//    }
 
 
 }

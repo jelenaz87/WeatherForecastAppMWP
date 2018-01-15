@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.preference.CheckBoxPreference;
 
+import android.support.v7.preference.EditTextPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceScreen;
 
@@ -47,7 +48,6 @@ public class SettingsFragmentModelImpl implements SettingsFragmentModel {
 
 
 
-
     @Override
     public void sendSharedPreferenceAndPreference(SharedPreferences sharedPreferences, ArrayList<Preference> list) {
 
@@ -67,13 +67,13 @@ public class SettingsFragmentModelImpl implements SettingsFragmentModel {
 
 
         if (key.equals(mContext.getString(R.string.pref_location_key))) {
-
-            Weather weather = WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().isTableHasResultForCity(preferences.getString(key, "Belgrade"));
-
-            if (weather == null) {
+           String location = preferences.getString(key, "");
+            List<Weather> list = WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().isTableHasResultForCity(location);
+            List<Weather> list1 = WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().loadAllWeatherObject();
+            if (list.size() == 0 || list == null) {
 
                 DataFromInternet data = new DataFromInternet();
-                data.getDataFromInternet(preferences.getString(key, "Belgrade"), mContext).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Observer<List<Weather>>() {
+                data.getDataFromInternet(location, mContext).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Observer<List<Weather>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
@@ -98,18 +98,31 @@ public class SettingsFragmentModelImpl implements SettingsFragmentModel {
                 });
 
             } else {
-               Weather w = WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().getValueForChangeState(true);
-               isLocationChanged = !w.isChangedLocation();
-                Weather weatherUpdate = new Weather();
-                weatherUpdate.setChangedLocation(isLocationChanged);
-                WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().update(weatherUpdate);
 
+                List<Weather> mlist = WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().getValueForChangeState(true, location);
+
+                   if (mlist.size() == 0 || mlist == null) {
+                       for (int j = 0; j<list.size(); j++) {
+                           list.get(j).setChangedLocation(true);
+                          list.get(j).setId(list.get(j).getId());
+                          WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().updateDatabase(list.get(j));
+                       }
+
+                } else {
+                       for (int j = 0; j<list.size(); j++) {
+                           list.get(j).setChangedLocation(false);
+                           list.get(j).setId(list.get(j).getId());
+                           WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().updateDatabase(list.get(j));
+                       }
+                   }
                 presenter.getResultOnSharedPreferenceChangeListener(preferences, key);
+                }
+
+
             }
+        else if (key.equals(mContext.getString(R.string.pref_units_key))) {
 
-
-
-            } else if (key.equals(mContext.getString(R.string.pref_units_key))) {
+            List<Weather> l = WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().loadAllWeatherObject();
 
             presenter.getResultOnSharedPreferenceChangeListener(preferences, key);
             }

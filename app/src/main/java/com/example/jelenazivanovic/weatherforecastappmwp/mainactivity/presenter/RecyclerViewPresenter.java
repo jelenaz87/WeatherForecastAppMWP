@@ -15,11 +15,11 @@ import java.util.List;
 
 public interface RecyclerViewPresenter {
 
-    void invokePresenter ();
+    void invokePresenter (String city);
     void updateWeather (List<Weather> mList);
     void sendIdOfRow (int id);
     void getWeatherObject (Weather weather);
-    void checkStateOfDatabase ();
-    void updateUi (List<Weather> mList);
+  //  void checkStateOfDatabase ();
+  //  void updateUi (List<Weather> mList);
 
 }

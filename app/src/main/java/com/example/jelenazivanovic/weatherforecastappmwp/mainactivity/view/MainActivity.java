@@ -14,14 +14,19 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 
 import com.example.jelenazivanovic.weatherforecastappmwp.R;
 import com.example.jelenazivanovic.weatherforecastappmwp.RecyclerViewModel;
 
+import com.example.jelenazivanovic.weatherforecastappmwp.data.DatabaseInsertWeatherInfo;
 import com.example.jelenazivanovic.weatherforecastappmwp.data.Weather;
 
 
+import com.example.jelenazivanovic.weatherforecastappmwp.data.WeatherDatabase;
 import com.example.jelenazivanovic.weatherforecastappmwp.detailactivity.view.DetailActivity;
 
 import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.di.DaggerRecyclerViewComponent;
@@ -33,15 +38,24 @@ import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.di.Recycle
 import com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.presenter.RecyclerViewPresenter;
 
 
+import org.reactivestreams.Subscription;
+
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.FlowableSubscriber;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class MainActivity extends AppCompatActivity implements ForecastAdapter.ForecastAdapterOnClickHandler, RecyclerViewView {
     private RecyclerView mRecyclerView;
     private ForecastAdapter mAdapter;
+    private EditText mEditTextLocation;
+    private TextView mTextViewLocation;
+    private Button mButton;
 
     private RecyclerViewModel model;
 
@@ -61,10 +75,33 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
         mAdapter = new ForecastAdapter(this, this);
-        presenter.invokePresenter();
+        mEditTextLocation = (EditText) findViewById(R.id.edittext_location);
+        mTextViewLocation = (TextView) findViewById(R.id.textView_location);
+        mButton = (Button) findViewById(R.id.buttonOk);
 
-       // model = ViewModelProviders.of(this).get(RecyclerViewModel.class);
+
+
+            mButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                    startActivity(intent);
+                    mTextViewLocation.setVisibility(View.INVISIBLE);
+                    mEditTextLocation.setVisibility(View.INVISIBLE);
+                    mButton.setVisibility(View.INVISIBLE);
+
+                }
+
+            });
+
+
+
+
+                    //  presenter.invokePresenter();
+
+                    // model = ViewModelProviders.of(this).get(RecyclerViewModel.class);
         mRecyclerView.setVisibility(View.INVISIBLE);
+
 
 //        model.getItemAndPersonList().observe(MainActivity.this, new android.arch.lifecycle.Observer<List<Weather>>() {
 //            @Override
@@ -79,10 +116,29 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
 
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
-        presenter.checkStateOfDatabase();
+        DatabaseInsertWeatherInfo data = new DatabaseInsertWeatherInfo(getApplicationContext());
+        data.updateUI().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.computation()).subscribe(new Consumer<List<Weather>>() {
+            @Override
+            public void accept(List<Weather> weatherList) throws Exception {
+                if (weatherList.size() == 0) {
+                    mTextViewLocation.setVisibility(View.VISIBLE);
+                    mButton.setVisibility(View.VISIBLE);
+                } else {
+                    mTextViewLocation.setVisibility(View.INVISIBLE);
+                    mButton.setVisibility(View.INVISIBLE);
+                    mEditTextLocation.setVisibility(View.INVISIBLE);
+                    mAdapter.swapCursor(weatherList);
+                    mRecyclerView.setAdapter(mAdapter);
+                    mRecyclerView.setVisibility(View.VISIBLE);
+
+                }
+            }
+        });
+
     }
 
     @Override
@@ -93,8 +149,12 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
     @Override
     public void lisOfWeather(List<Weather>list) {
 
-        mAdapter.swapCursor(list);
-        mRecyclerView.setAdapter(mAdapter);
+//        mAdapter.swapCursor(list);
+//        mRecyclerView.setAdapter(mAdapter);
+//        mRecyclerView.setVisibility(View.VISIBLE);
+//        mButton.setVisibility(View.INVISIBLE);
+//        mTextViewLocation.setVisibility(View.INVISIBLE);
+//        mEditTextLocation.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -104,10 +164,10 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
         startActivity(weatherDetailIntent);
     }
 
-    @Override
-    public void updateUi(List<Weather> mlist) {
-        mAdapter.swapCursor(mlist);
-    }
+//    @Override
+//    public void updateUi(List<Weather> mlist) {
+//        mAdapter.swapCursor(mlist);
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -125,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
 
         if (id == R.id.action_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
-            startActivityForResult(intent,2);
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);

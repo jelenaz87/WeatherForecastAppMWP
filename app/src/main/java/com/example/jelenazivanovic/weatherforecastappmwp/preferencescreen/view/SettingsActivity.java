@@ -15,7 +15,10 @@
  */
 package com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.view;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
@@ -39,7 +42,6 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
     }
 

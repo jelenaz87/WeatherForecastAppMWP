@@ -13,6 +13,8 @@ import java.util.List;
 
 import io.reactivex.Flowable;
 
+import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
+
 
 /**
  * Created by jelena.zivanovic on 12/25/2017.
@@ -20,7 +22,7 @@ import io.reactivex.Flowable;
 @Dao
 public interface WeatherDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert (onConflict = OnConflictStrategy.IGNORE)
     List<Long> insertWeatherObject (Weather... weathers);
 
    @Query("SELECT * FROM weather")
@@ -36,15 +38,15 @@ public interface WeatherDao {
     LiveData<List<Weather>> loadAllLoadData();
 
     @Query("SELECT * FROM weather")
-    Flowable<List<Weather>> getFlowableListOfObject ();
+    Flowable<Weather> getFlowableListOfObject ();
 
-    @Query("SELECT * FROM weather WHERE cityName = :name")
-    Weather isTableHasResultForCity(String name);
+    @Query("SELECT * FROM weather WHERE cityName LIKE :name")
+    List<Weather> isTableHasResultForCity(String name);
 
     @Update
-    int update(Weather... weathers);
+    void updateDatabase (Weather weather);
 
-    @Query("SELECT * FROM weather WHERE isChangedLocation = :isChanged")
-    Weather getValueForChangeState (boolean isChanged);
+    @Query("SELECT * FROM weather WHERE isChangedLocation = :isChanged AND cityName LIKE :name")
+    List<Weather> getValueForChangeState (boolean isChanged, String name);
 
 }

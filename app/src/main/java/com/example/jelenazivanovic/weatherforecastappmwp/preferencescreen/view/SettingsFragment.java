@@ -71,16 +71,18 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         DaggerSettingsFragmentComponent.builder().settingsFragmentModule(new SettingsFragmentModule(this)).build().inject(this);
+
+
     }
 
     private void setPreferenceSummary(Preference preference, Object value) {
 
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        });
+//        new Handler(Looper.getMainLooper()).post(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//            }
+//        });
         String stringValue = value.toString();
 
         if (preference instanceof ListPreference) {
