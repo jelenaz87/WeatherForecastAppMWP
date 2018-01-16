@@ -11,7 +11,7 @@ import java.io.Serializable;
 /**
  * Created by jelena.zivanovic on 12/25/2017.
  */
-@Entity (tableName = "weather", indices = {@Index(value = {"dateTimeMillis"}, unique = true)})
+@Entity (tableName = "weather")
 public class Weather implements Serializable {
 
     @PrimaryKey (autoGenerate = true)
@@ -27,6 +27,8 @@ public class Weather implements Serializable {
     private CityWeatherData cityObject;
 
     private boolean isChangedLocation;
+
+    private String unit;
 
 
 
@@ -79,6 +81,14 @@ public class Weather implements Serializable {
 
     public void setChangedLocation(boolean changedLocation) {
         isChangedLocation = changedLocation;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 
     public boolean isEmptyWeather (Weather weather) {

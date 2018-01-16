@@ -52,7 +52,10 @@ public class DataFromInternet {
 
     public Observable<List<Weather>> getDataForBelgrade (final Context mContext) {
 
-        Observable<WeatherObject> objectCall = ApiServiceClient.getResponseFromServiceApiForBelgrade().getWeatherObject("Belgrade,688","88679d8457078f98d550b4e24ac9ac26");
+        String location = SunshinePreferences.getWeatherLocation(mContext);
+        String city = location + ",688";
+
+        Observable<WeatherObject> objectCall = ApiServiceClient.getResponseFromServiceApiForBelgrade().getWeatherObject(city,"88679d8457078f98d550b4e24ac9ac26");
 
          return objectCall.map(new Function<WeatherObject, List<Weather>>() {
              @Override
@@ -147,7 +150,7 @@ public class DataFromInternet {
                 weather.setCityName(location);
                 CityWeatherData data = null;
                 long normalizedUtcStartDay = SunshineDateUtils.getNormalizedUtcDateForToday();
-                if (i ==0 || i == 8 || i == 16 || i == 24 || i == 32 ) {
+                if (i == 0 || i == 8 || i == 16 || i == 24 || i == 32 ) {
                     long dateTimeMillis = normalizedUtcStartDay + SunshineDateUtils.DAY_IN_MILLIS * y;
                     String dateString = SunshineDateUtils.getFriendlyDateString(mContext, dateTimeMillis, false);
                     int weatherId = weatherInfo.getWeatherDetail().get(0).getWeatherId();
@@ -174,6 +177,7 @@ public class DataFromInternet {
                     data = new CityWeatherData(y, dateString, weatherId, minTemp, maxTemp, pressureString, humidityString, windString, description);
                     weather.setCityObject(data);
                     weather.setChangedLocation(false);
+                    weather.setUnit("metric");
 
                     y++;
                 } else {

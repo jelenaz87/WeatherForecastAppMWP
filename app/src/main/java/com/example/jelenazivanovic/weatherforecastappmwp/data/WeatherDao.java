@@ -28,8 +28,8 @@ public interface WeatherDao {
    @Query("SELECT * FROM weather")
    List<Weather> loadAllWeatherObject();
 
-   @Query("SELECT * FROM weather WHERE id_row = :id")
-   Weather loadAEqualWithAnId(int id);
+   @Query("SELECT * FROM weather WHERE id_row = :id AND cityName LIKE :name")
+   Weather loadAEqualWithAnId(int id, String name);
 
     @Delete
     void deleteWeather(Weather... weathers);
@@ -38,7 +38,10 @@ public interface WeatherDao {
     LiveData<List<Weather>> loadAllLoadData();
 
     @Query("SELECT * FROM weather")
-    Flowable<Weather> getFlowableListOfObject ();
+    Flowable<List<Weather>> getFlowableListOfObject ();
+
+    @Query("SELECT * FROM weather WHERE cityName LIKE :name AND unit LIKE :unit")
+    List<Weather> isTableHasResultForCityAndUnit(String name, String unit);
 
     @Query("SELECT * FROM weather WHERE cityName LIKE :name")
     List<Weather> isTableHasResultForCity(String name);
@@ -48,5 +51,8 @@ public interface WeatherDao {
 
     @Query("SELECT * FROM weather WHERE isChangedLocation = :isChanged AND cityName LIKE :name")
     List<Weather> getValueForChangeState (boolean isChanged, String name);
+
+    @Query("SELECT * FROM weather WHERE cityName LIKE :name AND unit LIKE :unit")
+    List<Weather> getValueWithDefinedCityAndUnit (String name, String unit);
 
 }

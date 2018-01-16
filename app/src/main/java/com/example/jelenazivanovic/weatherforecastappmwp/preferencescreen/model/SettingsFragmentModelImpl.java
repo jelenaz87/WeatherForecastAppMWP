@@ -121,8 +121,42 @@ public class SettingsFragmentModelImpl implements SettingsFragmentModel {
 
             }
         else if (key.equals(mContext.getString(R.string.pref_units_key))) {
+            String units = preferences.getString(key, "");
+            String location = SunshinePreferences.getWeatherLocation(mContext);
+            List<Weather> mList = WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().getValueWithDefinedCityAndUnit(location,"metric");
+            if (units.equalsIgnoreCase("metric")) {
+           if (mList.size() == 0) {
+               for (int j = 0; j<mList.size(); j++) {
+                   mList.get(j).setUnit("metric");
+                   int maxTemp = Integer.parseInt(mList.get(j).getCityObject().getMaxTemperature()) - 273;
+                   String max =  "" + maxTemp;
+                   mList.get(j).getCityObject().setMaxTemperature(max);
+                   int minTemp = Integer.parseInt(mList.get(j).getCityObject().getMinTemperature()) - 273;
+                   String min =  "" + minTemp;
+                   mList.get(j).getCityObject().setMinTemperature(min);
+                   mList.get(j).setId(mList.get(j).getId());
+                   WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().updateDatabase(mList.get(j));
+               }
+           }
 
-            List<Weather> l = WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().loadAllWeatherObject();
+            } else {
+
+                if (mList.size() != 0) {
+                    for (int j = 0; j < mList.size(); j++) {
+                        mList.get(j).setUnit("imperial");
+                        int tempMax =Integer.parseInt(mList.get(j).getCityObject().getMaxTemperature()) + 273;
+                        String max = "" + tempMax;
+                        mList.get(j).getCityObject().setMaxTemperature(max);
+                        int tempMin = Integer.parseInt(mList.get(j).getCityObject().getMinTemperature()) + 273;
+                        String min = "" + tempMin;
+                        mList.get(j).getCityObject().setMinTemperature(min);
+                        mList.get(j).setId(mList.get(j).getId());
+                        WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().updateDatabase(mList.get(j));
+                    }
+
+
+                }
+            }
 
             presenter.getResultOnSharedPreferenceChangeListener(preferences, key);
             }

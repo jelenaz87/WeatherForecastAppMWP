@@ -53,18 +53,12 @@
         android:layout_centerHorizontal="true"
         android:text="Press Ok to put city name" />
 
-    <EditText
-        android:id="@+id/edittext_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/textView_location" />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Ok"
         android:id="@+id/buttonOk"
-        android:layout_below="@+id/edittext_location"
+        android:layout_below="@+id/textView_location"
         android:layout_centerHorizontal="true"/>
 
 </RelativeLayout>

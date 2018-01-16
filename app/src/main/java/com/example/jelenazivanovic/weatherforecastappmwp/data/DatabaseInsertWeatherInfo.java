@@ -9,6 +9,7 @@ import com.example.jelenazivanovic.weatherforecastappmwp.retrofitmountaintview.m
 import com.example.jelenazivanovic.weatherforecastappmwp.utilities.SunshineDateUtils;
 import com.example.jelenazivanovic.weatherforecastappmwp.utilities.SunshineWeatherUtils;
 
+import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.functions.Function;
 
 
 /**
@@ -67,7 +69,9 @@ public class DatabaseInsertWeatherInfo {
        return Observable.create(new ObservableOnSubscribe<Weather>() {
             @Override
             public void subscribe(ObservableEmitter<Weather> e) throws Exception {
-                e.onNext(WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().loadAEqualWithAnId(id));
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+                String location = preferences.getString("location","");
+                e.onNext(WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().loadAEqualWithAnId(id,location));
             }
         });
     }
@@ -79,14 +83,19 @@ public class DatabaseInsertWeatherInfo {
         }
     }
 
-//    public Flowable<List<Weather>> getDataIfChangesExistInDatabase () {
-//        return WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().getFlowableListOfObject();
-//    }
 
     public Observable<List<Weather>> updateUI () {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         String location = preferences.getString("location","");
-        return Observable.fromArray(database.weatherDao().isTableHasResultForCity(location));
+        String unit = preferences.getString("units", "");
+        return Observable.fromArray(database.weatherDao().isTableHasResultForCityAndUnit(location, unit));
+    }
+
+    public Flowable<List<Weather>> getFlowableFromBase () {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String location = preferences.getString("location","");
+
+        return Flowable.fromArray(database.weatherDao().isTableHasResultForCity(location));
     }
 }
 
