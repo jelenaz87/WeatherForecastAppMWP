@@ -128,9 +128,12 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 
             forecastAdapterViewHolder.descriptionView.setText(list.get(position).getCityObject().getDescription());
 
-            forecastAdapterViewHolder.lowTempView.setText(list.get(position).getCityObject().getMinTemperature());
+            String minTemp = SunshineWeatherUtils.formatTemperature(mContext, list.get(position).getCityObject().getMinTemperature());
+            forecastAdapterViewHolder.lowTempView.setText(minTemp);
 
-            forecastAdapterViewHolder.highTempView.setText(list.get(position).getCityObject().getMaxTemperature());
+            String maxTemp = SunshineWeatherUtils.formatTemperature(mContext, list.get(position).getCityObject().getMaxTemperature());
+            forecastAdapterViewHolder.highTempView.setText(maxTemp);
+
 
             int viewType = getItemViewType(position);
             int weatherImageId;

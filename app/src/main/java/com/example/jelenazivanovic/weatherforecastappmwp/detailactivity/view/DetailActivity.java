@@ -183,11 +183,13 @@ public class DetailActivity extends AppCompatActivity {
         String allyDescription = getString(R.string.a11y_forecast,weather.getCityObject().getDescription());
         mDetailBinding.primaryInfo.weatherDescription.setContentDescription(allyDescription);
 
-        mDetailBinding.primaryInfo.lowTemperature.setText(weather.getCityObject().getMinTemperature());
+        String minTemp = SunshineWeatherUtils.formatTemperature(getApplicationContext(), weather.getCityObject().getMinTemperature());
+        mDetailBinding.primaryInfo.lowTemperature.setText(minTemp);
         String allyLowTemperature = getString(R.string.a11y_low_temp,weather.getCityObject().getMinTemperature());
         mDetailBinding.primaryInfo.lowTemperature.setContentDescription(allyLowTemperature);
 
-        mDetailBinding.primaryInfo.highTemperature.setText(weather.getCityObject().getMaxTemperature());
+        String maxTemp = SunshineWeatherUtils.formatTemperature(getApplicationContext(), weather.getCityObject().getMaxTemperature());
+        mDetailBinding.primaryInfo.highTemperature.setText(maxTemp);
         String allyHighTemperature = getString(R.string.a11y_high_temp,weather.getCityObject().getMaxTemperature());
         mDetailBinding.primaryInfo.highTemperature.setContentDescription(allyHighTemperature);
 

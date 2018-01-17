@@ -64,10 +64,9 @@ public class SettingsFragmentModelImpl implements SettingsFragmentModel {
     @Override
     public void sendResultOnSharedPreferenceChangeListenerToModel(final String key, final Context mContext, final SharedPreferences preferences) {
 
-
-
         if (key.equals(mContext.getString(R.string.pref_location_key))) {
            String location = preferences.getString(key, "");
+           final String units = preferences.getString("units", "");
             List<Weather> list = WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().isTableHasResultForCity(location);
             List<Weather> list1 = WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().loadAllWeatherObject();
             if (list.size() == 0 || list == null) {
@@ -81,6 +80,16 @@ public class SettingsFragmentModelImpl implements SettingsFragmentModel {
 
                     @Override
                     public void onNext(List<Weather> weatherList) {
+                        if (units.equalsIgnoreCase("imperial")) {
+                            for (int j = 0; j < weatherList.size(); j++) {
+                                weatherList.get(j).setUnit("imperial");
+                                double tempMax = weatherList.get(j).getCityObject().getMaxTemperature() + 273.15;
+                                weatherList.get(j).getCityObject().setMaxTemperature(tempMax);
+                                double tempMin = weatherList.get(j).getCityObject().getMinTemperature() + 273.15;
+                                weatherList.get(j).getCityObject().setMinTemperature(tempMin);
+                                weatherList.set(j,weatherList.get(j));
+                            }
+                        }
                         for (int i = 0; i < weatherList.size(); i++) {
                             WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().insertWeatherObject(weatherList.get(i));
                         }
@@ -100,21 +109,90 @@ public class SettingsFragmentModelImpl implements SettingsFragmentModel {
             } else {
 
                 List<Weather> mlist = WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().getValueForChangeState(true, location);
+                List<Weather> mListMetric = WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().getValueWithDefinedCityAndUnit(location,"metric");
 
-                   if (mlist.size() == 0 || mlist == null) {
-                       for (int j = 0; j<list.size(); j++) {
-                           list.get(j).setChangedLocation(true);
-                          list.get(j).setId(list.get(j).getId());
-                          WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().updateDatabase(list.get(j));
-                       }
+                if (mListMetric.size() != 0 && units.equalsIgnoreCase("metric")) {
+                    if (mlist.size() == 0 || mlist == null) {
+                        for (int j = 0; j<list.size(); j++) {
+                            list.get(j).setChangedLocation(true);
+                            list.get(j).setId(list.get(j).getId());
+                            WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().updateDatabase(list.get(j));
+                        }
 
-                } else {
-                       for (int j = 0; j<list.size(); j++) {
-                           list.get(j).setChangedLocation(false);
-                           list.get(j).setId(list.get(j).getId());
-                           WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().updateDatabase(list.get(j));
-                       }
-                   }
+                    } else {
+                        for (int j = 0; j<list.size(); j++) {
+                            list.get(j).setChangedLocation(false);
+                            list.get(j).setId(list.get(j).getId());
+                            WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().updateDatabase(list.get(j));
+                        }
+                    }
+                } else if (mListMetric.size() != 0 && units.equalsIgnoreCase("imperial")) {
+                    if (mlist.size() == 0 || mlist == null) {
+                        for (int j = 0; j<list.size(); j++) {
+                            list.get(j).setUnit("imperial");
+                            double maxTemp = list.get(j).getCityObject().getMaxTemperature() + 273.15;
+                            list.get(j).getCityObject().setMaxTemperature(maxTemp);
+                            double minTemp = list.get(j).getCityObject().getMinTemperature() + 273.15;
+                            list.get(j).getCityObject().setMinTemperature(minTemp);
+                            list.get(j).setChangedLocation(true);
+                            list.get(j).setId(list.get(j).getId());
+                            WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().updateDatabase(list.get(j));
+                        }
+
+                    } else {
+                        for (int j = 0; j<list.size(); j++) {
+                            list.get(j).setUnit("imperial");
+                            double maxTemp = list.get(j).getCityObject().getMaxTemperature() + 273.15;
+                            list.get(j).getCityObject().setMaxTemperature(maxTemp);
+                            double minTemp = list.get(j).getCityObject().getMinTemperature() + 273.15;
+                            list.get(j).getCityObject().setMinTemperature(minTemp);
+                            list.get(j).setChangedLocation(false);
+                            list.get(j).setId(list.get(j).getId());
+                            WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().updateDatabase(list.get(j));
+                        }
+                    }
+                } else if (mListMetric.size() == 0 && units.equalsIgnoreCase("imperial")) {
+                    if (mlist.size() == 0 || mlist == null) {
+                        for (int j = 0; j<list.size(); j++) {
+                            list.get(j).setChangedLocation(true);
+                            list.get(j).setId(list.get(j).getId());
+                            WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().updateDatabase(list.get(j));
+                        }
+
+                    } else {
+                        for (int j = 0; j<list.size(); j++) {
+                            list.get(j).setChangedLocation(false);
+                            list.get(j).setId(list.get(j).getId());
+                            WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().updateDatabase(list.get(j));
+                        }
+                    }
+                } else if (mListMetric.size() == 0 && units.equalsIgnoreCase("metric")) {
+                    if (mlist.size() == 0 || mlist == null) {
+                        for (int j = 0; j<list.size(); j++) {
+                            list.get(j).setUnit("metric");
+                            double maxTemp = list.get(j).getCityObject().getMaxTemperature() - 273.15;
+                            list.get(j).getCityObject().setMaxTemperature(maxTemp);
+                            double minTemp = list.get(j).getCityObject().getMinTemperature() - 273.15;
+                            list.get(j).getCityObject().setMinTemperature(minTemp);
+                            list.get(j).setChangedLocation(true);
+                            list.get(j).setId(list.get(j).getId());
+                            WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().updateDatabase(list.get(j));
+                        }
+
+                    } else {
+                        for (int j = 0; j<list.size(); j++) {
+                            list.get(j).setUnit("metric");
+                            double maxTemp = list.get(j).getCityObject().getMaxTemperature() - 273.15;
+                            list.get(j).getCityObject().setMaxTemperature(maxTemp);
+                            double minTemp = list.get(j).getCityObject().getMinTemperature() - 273.15;
+                            list.get(j).getCityObject().setMinTemperature(minTemp);
+                            list.get(j).setChangedLocation(false);
+                            list.get(j).setId(list.get(j).getId());
+                            WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().updateDatabase(list.get(j));
+                        }
+                    }
+                }
+
                 presenter.getResultOnSharedPreferenceChangeListener(preferences, key);
                 }
 
@@ -123,35 +201,32 @@ public class SettingsFragmentModelImpl implements SettingsFragmentModel {
         else if (key.equals(mContext.getString(R.string.pref_units_key))) {
             String units = preferences.getString(key, "");
             String location = SunshinePreferences.getWeatherLocation(mContext);
-            List<Weather> mList = WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().getValueWithDefinedCityAndUnit(location,"metric");
+
             if (units.equalsIgnoreCase("metric")) {
-           if (mList.size() == 0) {
-               for (int j = 0; j<mList.size(); j++) {
-                   mList.get(j).setUnit("metric");
-                   int maxTemp = Integer.parseInt(mList.get(j).getCityObject().getMaxTemperature()) - 273;
-                   String max =  "" + maxTemp;
-                   mList.get(j).getCityObject().setMaxTemperature(max);
-                   int minTemp = Integer.parseInt(mList.get(j).getCityObject().getMinTemperature()) - 273;
-                   String min =  "" + minTemp;
-                   mList.get(j).getCityObject().setMinTemperature(min);
-                   mList.get(j).setId(mList.get(j).getId());
-                   WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().updateDatabase(mList.get(j));
+                List<Weather> mListImperial = WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().getValueWithDefinedCityAndUnit(location,"imperial");
+           if (mListImperial.size() != 0) {
+               for (int j = 0; j<mListImperial.size(); j++) {
+                   mListImperial.get(j).setUnit("metric");
+                   double maxTemp = mListImperial.get(j).getCityObject().getMaxTemperature() - 273.15;
+                   mListImperial.get(j).getCityObject().setMaxTemperature(maxTemp);
+                   double minTemp = mListImperial.get(j).getCityObject().getMinTemperature() - 273.15;
+                   mListImperial.get(j).getCityObject().setMinTemperature(minTemp);
+                   mListImperial.get(j).setId(mListImperial.get(j).getId());
+                   WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().updateDatabase(mListImperial.get(j));
                }
            }
 
             } else {
-
-                if (mList.size() != 0) {
-                    for (int j = 0; j < mList.size(); j++) {
-                        mList.get(j).setUnit("imperial");
-                        int tempMax =Integer.parseInt(mList.get(j).getCityObject().getMaxTemperature()) + 273;
-                        String max = "" + tempMax;
-                        mList.get(j).getCityObject().setMaxTemperature(max);
-                        int tempMin = Integer.parseInt(mList.get(j).getCityObject().getMinTemperature()) + 273;
-                        String min = "" + tempMin;
-                        mList.get(j).getCityObject().setMinTemperature(min);
-                        mList.get(j).setId(mList.get(j).getId());
-                        WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().updateDatabase(mList.get(j));
+                List<Weather> mListMetric = WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().getValueWithDefinedCityAndUnit(location,"metric");
+                if (mListMetric.size() != 0) {
+                    for (int j = 0; j < mListMetric.size(); j++) {
+                        mListMetric.get(j).setUnit("imperial");
+                        double tempMax = mListMetric.get(j).getCityObject().getMaxTemperature() + 273.15;
+                        mListMetric.get(j).getCityObject().setMaxTemperature(tempMax);
+                        double tempMin = mListMetric.get(j).getCityObject().getMinTemperature() + 273.15;
+                        mListMetric.get(j).getCityObject().setMinTemperature(tempMin);
+                        mListMetric.get(j).setId(mListMetric.get(j).getId());
+                        WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().updateDatabase(mListMetric.get(j));
                     }
 
 

@@ -158,11 +158,11 @@ public class DataFromInternet {
 
                     double tempMinInFahrenheit = weatherInfo.getTemperatureObject().getMinTemperature();
                     double tempMinInCelsius = tempMinInFahrenheit - 273.15;
-                    String minTemp = SunshineWeatherUtils.formatTemperature(mContext, tempMinInCelsius);
+                 //   String minTemp = SunshineWeatherUtils.formatTemperature(mContext, tempMinInCelsius);
 
                     double tempMaxInFahrenheit = weatherInfo.getTemperatureObject().getMaxTemperature();
                     double tempMaxInCelsius = tempMaxInFahrenheit - 273.15;
-                    String maxTemp = SunshineWeatherUtils.formatTemperature(mContext, tempMaxInCelsius);
+                  //  String maxTemp = SunshineWeatherUtils.formatTemperature(mContext, tempMaxInCelsius);
 
                     float pressure = weatherInfo.getTemperatureObject().getPressure();
                     String pressureString = mContext.getString(R.string.format_pressure, pressure);
@@ -174,7 +174,7 @@ public class DataFromInternet {
                     float windDirection = weatherInfo.getWindInfo().getWindDirection();
                     String windString = SunshineWeatherUtils.getFormattedWind(mContext, windSpeed, windDirection);
 
-                    data = new CityWeatherData(y, dateString, weatherId, minTemp, maxTemp, pressureString, humidityString, windString, description);
+                    data = new CityWeatherData(y, dateString, weatherId, tempMinInCelsius, tempMaxInCelsius, pressureString, humidityString, windString, description);
                     weather.setCityObject(data);
                     weather.setChangedLocation(false);
                     weather.setUnit("metric");

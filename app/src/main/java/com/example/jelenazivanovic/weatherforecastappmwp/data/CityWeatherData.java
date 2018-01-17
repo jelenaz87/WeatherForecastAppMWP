@@ -15,8 +15,8 @@ public class CityWeatherData implements Serializable {
     private int id_row;
     private String dateTimeMillis;
     private int weatherId;
-    private String minTemperature;
-    private String maxTemperature;
+    private double minTemperature;
+    private double maxTemperature;
     private String pressure;
     private String humidity;
     private String windString;
@@ -26,7 +26,7 @@ public class CityWeatherData implements Serializable {
     public CityWeatherData() {
     }
 
-    public CityWeatherData(int id_row, String dateTimeMillis, int weatherId, String minTemperature, String maxTemperature, String pressure, String humidity, String windString, String description) {
+    public CityWeatherData(int id_row, String dateTimeMillis, int weatherId, double minTemperature, double maxTemperature, String pressure, String humidity, String windString, String description) {
         this.id_row = id_row;
         this.dateTimeMillis = dateTimeMillis;
         this.weatherId = weatherId;
@@ -62,19 +62,19 @@ public class CityWeatherData implements Serializable {
         this.weatherId = weatherId;
     }
 
-    public String getMinTemperature() {
+    public double getMinTemperature() {
         return minTemperature;
     }
 
-    public void setMinTemperature(String minTemperature) {
+    public void setMinTemperature(double minTemperature) {
         this.minTemperature = minTemperature;
     }
 
-    public String getMaxTemperature() {
+    public double getMaxTemperature() {
         return maxTemperature;
     }
 
-    public void setMaxTemperature(String maxTemperature) {
+    public void setMaxTemperature(double maxTemperature) {
         this.maxTemperature = maxTemperature;
     }
 
