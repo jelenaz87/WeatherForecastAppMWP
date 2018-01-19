@@ -141,12 +141,10 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
         data.getFlowableFromBase().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.computation()).subscribe(new Consumer<List<Weather>>() {
             @Override
             public void accept(List<Weather> weathers) throws Exception {
-                if (weathers.size() == 0) {
+                if (weathers.size() == 0 || weathers == null) {
                     mTextViewLocation.setVisibility(View.VISIBLE);
                     mButton.setVisibility(View.VISIBLE);
                 } else {
-                    mTextViewLocation.setVisibility(View.INVISIBLE);
-                    mButton.setVisibility(View.INVISIBLE);
                     mAdapter.swapCursor(weathers);
                     mRecyclerView.setAdapter(mAdapter);
                     mRecyclerView.setVisibility(View.VISIBLE);
@@ -158,7 +156,12 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
 
     @Override
     public void onClick(int id) {
-        presenter.sendIdOfRow(id);
+
+       // presenter.sendIdOfRow(id);
+
+        Intent weatherDetailIntent = new Intent(MainActivity.this, DetailActivity.class);
+        weatherDetailIntent.putExtra("id", id);
+        startActivity(weatherDetailIntent);
     }
 
     @Override

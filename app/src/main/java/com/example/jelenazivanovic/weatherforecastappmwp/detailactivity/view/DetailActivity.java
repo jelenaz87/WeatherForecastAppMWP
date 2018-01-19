@@ -24,10 +24,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 
 import com.example.jelenazivanovic.weatherforecastappmwp.R;
+import com.example.jelenazivanovic.weatherforecastappmwp.data.DatabaseInsertWeatherInfo;
 import com.example.jelenazivanovic.weatherforecastappmwp.data.Weather;
 
 
@@ -36,6 +38,10 @@ import com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.view.S
 import com.example.jelenazivanovic.weatherforecastappmwp.utilities.SunshineWeatherUtils;
 
 import java.util.List;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -73,6 +79,7 @@ public class DetailActivity extends AppCompatActivity {
      */
 //  TODO (3) Declare an ActivityDetailBinding field called mDetailBinding
     private ActivityDetailBinding mDetailBinding;
+    private int id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,13 +102,25 @@ public class DetailActivity extends AppCompatActivity {
 
 
 
-        weather = (Weather) getIntent().getSerializableExtra("weather");
-        if (weather == null) throw new NullPointerException("URI for DetailActivity cannot be null");
+        id  = getIntent().getIntExtra("id",0);
+       // if (weather == null) throw new NullPointerException("URI for DetailActivity cannot be null");
 
-       setData(weather);
 
         /* This connects our Activity into the loader lifecycle. */
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        DatabaseInsertWeatherInfo data = new DatabaseInsertWeatherInfo(getApplicationContext());
+        data.readOneRowFromDatabase(id).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.computation()).subscribe(new Consumer<Weather>() {
+            @Override
+            public void accept(Weather weather) throws Exception {
+                setData(weather);
+            }
+        });
     }
 
     /**
@@ -185,12 +204,12 @@ public class DetailActivity extends AppCompatActivity {
 
         String minTemp = SunshineWeatherUtils.formatTemperature(getApplicationContext(), weather.getCityObject().getMinTemperature());
         mDetailBinding.primaryInfo.lowTemperature.setText(minTemp);
-        String allyLowTemperature = getString(R.string.a11y_low_temp,weather.getCityObject().getMinTemperature());
+        String allyLowTemperature = getString(R.string.a11y_low_temp,minTemp);
         mDetailBinding.primaryInfo.lowTemperature.setContentDescription(allyLowTemperature);
 
         String maxTemp = SunshineWeatherUtils.formatTemperature(getApplicationContext(), weather.getCityObject().getMaxTemperature());
         mDetailBinding.primaryInfo.highTemperature.setText(maxTemp);
-        String allyHighTemperature = getString(R.string.a11y_high_temp,weather.getCityObject().getMaxTemperature());
+        String allyHighTemperature = getString(R.string.a11y_high_temp,maxTemp);
         mDetailBinding.primaryInfo.highTemperature.setContentDescription(allyHighTemperature);
 
         mDetailBinding.extraWeather.humidityValue.setText(weather.getCityObject().getHumidity());

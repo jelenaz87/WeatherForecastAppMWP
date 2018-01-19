@@ -2,6 +2,7 @@ package com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.model
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 
 import android.preference.PreferenceManager;
@@ -11,6 +12,7 @@ import android.support.v7.preference.EditTextPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceScreen;
 
+import com.example.jelenazivanovic.weatherforecastappmwp.MapsActivity;
 import com.example.jelenazivanovic.weatherforecastappmwp.R;
 import com.example.jelenazivanovic.weatherforecastappmwp.data.SunshinePreferences;
 import com.example.jelenazivanovic.weatherforecastappmwp.data.Weather;
@@ -40,6 +42,7 @@ public class SettingsFragmentModelImpl implements SettingsFragmentModel {
     private boolean isLocationChanged;
 
 
+
     public SettingsFragmentModelImpl(SettingsFragmentPresenter presenter) {
         this.presenter = presenter;
         this.isLocationChanged = false;
@@ -65,6 +68,7 @@ public class SettingsFragmentModelImpl implements SettingsFragmentModel {
     public void sendResultOnSharedPreferenceChangeListenerToModel(final String key, final Context mContext, final SharedPreferences preferences) {
 
         if (key.equals(mContext.getString(R.string.pref_location_key))) {
+
            String location = preferences.getString(key, "");
            final String units = preferences.getString("units", "");
             List<Weather> list = WeatherDatabase.getWeatherDatabaseInstance(mContext).weatherDao().isTableHasResultForCity(location);

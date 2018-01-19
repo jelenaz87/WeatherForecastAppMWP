@@ -30,9 +30,12 @@ import android.support.v7.preference.ListPreference;
 
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.preference.PreferenceScreen;
+import android.view.View;
 
 import com.example.jelenazivanovic.weatherforecastappmwp.ListAdapterAsyncTaskLoader;
+import com.example.jelenazivanovic.weatherforecastappmwp.MapsActivity;
 import com.example.jelenazivanovic.weatherforecastappmwp.R;
 
 
@@ -51,6 +54,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
+import static android.app.Activity.RESULT_OK;
+
 
 /**
  * The SettingsFragment serves as the display for all of the user's settings. In Sunshine, the
@@ -67,10 +72,17 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
     @Inject
     SettingsFragmentPresenter presenter;
 
+    private SharedPreferences preferences;
+    private String key;
+
+    static final int PICK_LOCATION_REQUEST = 1;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         DaggerSettingsFragmentComponent.builder().settingsFragmentModule(new SettingsFragmentModule(this)).build().inject(this);
+
+
 
 
     }
@@ -143,10 +155,39 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
 
         DaggerSettingsFragmentComponent.builder().settingsFragmentModule(new SettingsFragmentModule(this)).build().inject(this);
         final Context mContext = getActivity().getBaseContext();
-        presenter.sendKey(key, mContext, sharedPreferences);
+        if (key.equalsIgnoreCase("location")) {
+            Intent mapIntent = new Intent(mContext, MapsActivity.class);
+            mapIntent.setAction(Intent.ACTION_PICK);
+            startActivityForResult(mapIntent,PICK_LOCATION_REQUEST);
+        }
+
+        preferences = sharedPreferences;
+        this.key = key;
+
+
+
+
 
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_LOCATION_REQUEST) {
+            if (resultCode == RESULT_OK) {
+
+                String city = data.getStringExtra("city");
+
+                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putString("location", city);
+                editor.apply();
+
+                presenter.sendKey(key, getContext(), preferences);
+            }
+        }
+    }
 
     @Override
     public void getResults(Preference preference, Object value) {
@@ -163,4 +204,5 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
             }
         }
     }
+
 }
