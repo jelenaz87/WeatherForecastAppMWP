@@ -2,6 +2,7 @@ package com.example.jelenazivanovic.weatherforecastappmwp.mainactivity.model;
 
 
 import android.content.Context;
+import android.view.View;
 
 import com.example.jelenazivanovic.weatherforecastappmwp.data.DatabaseInsertWeatherInfo;
 import com.example.jelenazivanovic.weatherforecastappmwp.data.SunshinePreferences;
@@ -106,51 +107,17 @@ public class RecyclerViewModelImpl  implements RecyclerViewModel {
 
     }
 
-//    @Override
-//    public void getStateOfdatabase() {
-//
-//        DatabaseInsertWeatherInfo data = new DatabaseInsertWeatherInfo(mContext);
-//        data.getDataIfChangesExistInDatabase().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new FlowableSubscriber<List<Weather>>() {
-//            @Override
-//            public void onSubscribe(Subscription s) {
-//
-//            }
-//
-//            @Override
-//            public void onNext(List<Weather> weatherList) {
-//                presenter.updateUi(weatherList);
-//            }
-//
-//            @Override
-//            public void onError(Throwable t) {
-//
-//            }
-//
-//            @Override
-//            public void onComplete() {
-//
-//            }
-//        });
-//
-//    }
+    @Override
+    public void getStateOfdatabase() {
+        DatabaseInsertWeatherInfo data = new DatabaseInsertWeatherInfo(mContext);
+        data.getFlowableFromBase().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.computation()).subscribe(new Consumer<List<Weather>>() {
+            @Override
+            public void accept(List<Weather> weathers) throws Exception {
+              presenter.updateUi(weathers);
+            }
+        });
+    }
 
 
-//            @Override
-//            public void onCompleted() {
-//
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//
-//            }
-//
-//            @Override
-//            public void onNext(List<Weather> weatherList) {
-//                if (!isInserted) {
-//                    weatherInfo.insertData(weatherList);
-//                }
-//                presenter.updateWeather(weatherList);
-//            }
 }
 

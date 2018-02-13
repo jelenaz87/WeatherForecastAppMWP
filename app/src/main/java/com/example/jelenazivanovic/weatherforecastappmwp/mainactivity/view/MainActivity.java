@@ -57,8 +57,6 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
     private TextView mTextViewLocation;
     private Button mButton;
 
-    private RecyclerViewModel model;
-
     @Inject
     RecyclerViewPresenter presenter;
 
@@ -118,40 +116,9 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
     @Override
     protected void onResume() {
         super.onResume();
-//               DatabaseInsertWeatherInfo data = new DatabaseInsertWeatherInfo(getApplicationContext());
-//        data.readFromBase().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.computation()).subscribe(new Consumer<List<Weather>>() {
-//            @Override
-//            public void accept(List<Weather> weatherList) throws Exception {
-//                if (weatherList.size() == 0) {
-//                    mTextViewLocation.setVisibility(View.VISIBLE);
-//                    mButton.setVisibility(View.VISIBLE);
-//                } else {
-//                    mTextViewLocation.setVisibility(View.INVISIBLE);
-//                    mButton.setVisibility(View.INVISIBLE);
-//                    mEditTextLocation.setVisibility(View.INVISIBLE);
-//                    mAdapter.swapCursor(weatherList);
-//                    mRecyclerView.setAdapter(mAdapter);
-//                    mRecyclerView.setVisibility(View.VISIBLE);
-//
-//                }
-//            }
-//        });
 
-        DatabaseInsertWeatherInfo data = new DatabaseInsertWeatherInfo(getApplicationContext());
-        data.getFlowableFromBase().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.computation()).subscribe(new Consumer<List<Weather>>() {
-            @Override
-            public void accept(List<Weather> weathers) throws Exception {
-                if (weathers.size() == 0 || weathers == null) {
-                    mTextViewLocation.setVisibility(View.VISIBLE);
-                    mButton.setVisibility(View.VISIBLE);
-                } else {
-                    mAdapter.swapCursor(weathers);
-                    mRecyclerView.setAdapter(mAdapter);
-                    mRecyclerView.setVisibility(View.VISIBLE);
+        presenter.checkStateOfDatabase();
 
-                }
-            }
-        });
     }
 
     @Override
@@ -182,10 +149,19 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
         startActivity(weatherDetailIntent);
     }
 
-//    @Override
-//    public void updateUi(List<Weather> mlist) {
-//        mAdapter.swapCursor(mlist);
-//    }
+    @Override
+    public void updateUi(List<Weather> mlist) {
+        if (mlist.size() == 0 || mlist == null) {
+            mTextViewLocation.setVisibility(View.VISIBLE);
+            mButton.setVisibility(View.VISIBLE);
+        } else {
+            mAdapter.swapCursor(mlist);
+            mRecyclerView.setAdapter(mAdapter);
+            mRecyclerView.setVisibility(View.VISIBLE);
+
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

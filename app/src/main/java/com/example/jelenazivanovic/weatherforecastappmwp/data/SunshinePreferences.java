@@ -70,6 +70,14 @@ public final class SunshinePreferences {
         return sp.getString(keyForLocation, defaultLocation);
     }
 
+    public static String getUnitsFromSharedPreference (Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+
+        String keyForUnits = context.getString(R.string.pref_units_key);
+        String defaultUnits = context.getString(R.string.pref_units_metric);
+        return sp.getString(keyForUnits,defaultUnits);
+    }
+
     public static String getWeatherLocation(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
 

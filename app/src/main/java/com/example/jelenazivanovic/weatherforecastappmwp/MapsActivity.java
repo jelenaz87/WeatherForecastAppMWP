@@ -114,7 +114,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Geocoder geocoder = new Geocoder(this);
         List<Address> addresses = null;
         try {
-            addresses = geocoder.getFromLocation(markerNext.getPosition().latitude, markerNext.getPosition().longitude, 1);
+            addresses = geocoder.getFromLocation(markerPrevious.getPosition().latitude, markerPrevious.getPosition().longitude, 3);
         } catch (IOException e) {
             e.printStackTrace();
         }

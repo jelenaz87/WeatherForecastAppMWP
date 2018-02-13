@@ -24,6 +24,9 @@ import android.view.MenuItem;
 
 import com.example.jelenazivanovic.weatherforecastappmwp.R;
 
+import static com.example.jelenazivanovic.weatherforecastappmwp.preferencescreen.view.SettingsFragment.PICK_LOCATION_REQUEST;
+import static java.security.AccessController.getContext;
+
 /**
  * SettingsActivity is responsible for displaying the {@link SettingsFragment}. It is also
  * responsible for orchestrating proper navigation when the up button is clicked. When the up
@@ -56,5 +59,24 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_LOCATION_REQUEST) {
+            if (resultCode == RESULT_OK) {
+
+                String city = data.getStringExtra("city");
+
+                SharedPreferences pref = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(getContext());
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putString("location", city);
+                editor.apply();
+
+                presenter.sendKey(key, getContext(), preferences);
+            }
+        }
     }
 }
